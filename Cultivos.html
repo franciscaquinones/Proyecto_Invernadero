@@ -72,6 +72,28 @@
 
             <h2>Buscar Cultivo:</h2>
 
+            <form>
+
+                <label for="Busqueda">Nombre del cultivo: </label>
+                <input type="text" id="Busqueda" name="Busqueda" placeholder="Ej: Lechuga">
+                <br>
+
+                <label for="Fase">Fase: </label>
+                <select id="Fase" name="Fase">
+                    <option value="Todos">Todas</option>
+                    <option value="Activo">Activo</option>
+                    <option value="Desarrollo">En Desarrollo</option>
+                    <option value="Experimental">Experimental</option>
+                    <option value="Finalizado">Finalizado</option>
+                </select>
+
+                <button type="button" id="Boton_De_Filtro">Filtrar</button>
+                <br>
+
+                <button type="button" id="Boton_De_Agregar">Para agregar un cultivo, haz clic aquí</button>
+
+            </form>
+
         </section>
 
 
