@@ -26,7 +26,59 @@ header {
 
 header a {
     padding: 5px 10px;
-    color: #eeeeee;
+    color: #963232;
     text-decoration: none;
 }
 
+header a:hover { /* El hover es para cuando se le coloca el mouse encima, se ve más bonito... */
+    color: white;
+}
+
+nav {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    background-color: #000000;
+}
+
+nav a {
+    color: #963232;
+    text-decoration: none;
+}
+
+nav a:hover {
+    color: white;
+}
+
+#Inicio {
+    color: #f03434f7;
+    border-bottom: 2px solid red;;
+}
+
+main h2 {
+    color: #eeeeee;
+}
+
+#Resumen {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    text-align: center;
+}
+
+article {
+    padding: 20px;
+    background-color: rgb(52, 19, 19);
+}
+
+article p {
+    font-weight: bold;
+}
+
+footer {
+    padding: 20px;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.8;
+}
