@@ -1,4 +1,40 @@
+const FormLogin = document.getElementById("Form_Login"); //Crea variable del formulario de login
+if (FormLogin) { // "Si existe la variable" (evita que hayan problemas en otras paginas pq no existe)
 
+    FormLogin.addEventListener("submit", function(E) {
+
+        E.preventDefault(); //Evita qe se recargue la pagina
+
+        const Correo = document.getElementById("Correo").value;
+        const Contra = document.getElementById("Contrasena").value;
+
+        if (
+            Correo === "admin@umbrellabotanics.com" &&
+            Contra === "admin"
+        ) { // Esto simula el inicio de un admin, pero no será implementado en la versión final pq es inseguro.
+            window.location.href = "Admin.html";
+        }
+        else {
+            window.location.href = "Dashboard.html";
+        }
+
+    });
+
+}
+
+const FormRegistro = document.getElementById("Form_Reg");
+if (FormRegistro) {
+
+    FormRegistro.addEventListener("submit", function(E) {
+
+        const Nombre = document.getElementById("Nombre").value;
+        E.preventDefault();
+        alert("Bienvenido " + Nombre + ", tu cuenta ha sido creada con éxito. Será redirigido para iniciar sesión.");
+        window.location.href = "Login.html";
+
+    });
+
+}
 
 
 //Función de busqueda junto con fase abajito...

@@ -2,9 +2,11 @@
 <html lang = "es"><!--la pagina va a estar en español-->
     <head>
     <meta charset="UTF-8">
+    <link rel="shortcut icon" href="Logo_Pub.png">
     <link rel="stylesheet" href="Estilo_Form.css">
+    <script src="main.js" defer></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"><!--para el celu-->
-        <title>Iniciar Sesión en U.C.B.</title>
+        <title>Iniciar Sesión</title>
     </head>
     <body>
         <header>
@@ -13,7 +15,7 @@
         <main>
             <section>
                 <h2>
-                    Iniciar Sesión
+                    Iniciar Sesión en Umbrella Corps Botanics
                 </h2>
                 <form id="Form_Login">
                     <table>
@@ -21,10 +23,11 @@
                             <th>Ingrese su correo electrónico</th>
                             <td>
                                 <input
-                                 type="email"
-                                id="correo"
-                                name="correo"
-                                placeholder="ejemplo@dominio.com">
+                                type="email"
+                                id="Correo"
+                                name="Correo"
+                                placeholder="ejemplo@dominio.com"
+                                required>
                             </td>
                         </tr>
                         <tr>
@@ -34,8 +37,8 @@
                             <td>
                                 <input
                                 type="password"
-                                id="contraseña"
-                                name="contraseña"
+                                id="Contrasena"
+                                name="Contrasena"
                                 placeholder="Ingrese su contraseña"
                                 >
                             </td>
@@ -45,7 +48,7 @@
                             <td>
                                 <input
                                 type="submit"
-                                value="iniciar sesión">
+                                value="Iniciar Sesión">
                             </td>
                         </tr>
                     </table>
