@@ -100,3 +100,97 @@ if (BotonDeAgregar && ListaDeCultivos) {
     });
 
 }
+
+//Eliminar y editar cultivo,,,
+if (ListaDeCultivos) {
+
+    ListaDeCultivos.addEventListener("click", function (E) {
+
+        const Boton = E.target;
+
+        const Fila = Boton.closest("tr");
+
+
+        // Lo de abajo elimina el cultivo
+
+        if (Boton.classList.contains("Boton_De_Eliminar")) {
+
+            const Nombre = Fila.cells[0].textContent;
+
+            const Confirmar = confirm(
+                "¿Estás seguro de que deseas purgar el cultivo " + Nombre + "?"
+            );
+
+            if (Confirmar) {
+
+                Fila.remove();
+
+                alert("Cultivo purgado correctamente.");
+
+            }
+
+        }
+
+
+        // Lo de abajo sirve pa editar el cultivo
+
+        if (Boton.classList.contains("Boton_De_Editar")) {
+
+            const NombreActual = Fila.cells[0].textContent;
+            const TipoActual = Fila.cells[1].textContent;
+            const EstadoActual = Fila.cells[2].textContent;
+            const CuarentenaActual = Fila.cells[3].textContent;
+            const FechaActual = Fila.cells[4].textContent;
+
+
+            const NuevoNombre = prompt(
+                "Nombre del cultivo:",
+                NombreActual
+            );
+
+            const NuevoTipo = prompt(
+                "Tipo:",
+                TipoActual
+            );
+
+            const NuevoEstado = prompt(
+                "Estado:",
+                EstadoActual
+            );
+
+            const NuevaCuarentena = prompt(
+                "Nivel de cuarentena:",
+                CuarentenaActual
+            );
+
+            const NuevaFecha = prompt(
+                "Fecha:",
+                FechaActual
+            );
+
+
+            if (NuevoNombre) {
+                Fila.cells[0].textContent = NuevoNombre;
+            }
+
+            if (NuevoTipo) {
+                Fila.cells[1].textContent = NuevoTipo;
+            }
+
+            if (NuevoEstado) {
+                Fila.cells[2].textContent = NuevoEstado;
+            }
+
+            if (NuevaCuarentena) {
+                Fila.cells[3].textContent = NuevaCuarentena + "/10";
+            }
+
+            if (NuevaFecha) {
+                Fila.cells[4].textContent = NuevaFecha;
+            }
+
+        }
+
+    });
+
+}
