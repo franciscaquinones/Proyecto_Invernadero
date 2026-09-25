@@ -1,0 +1,22 @@
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    background-image: url("Fondo.jpeg");
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+header {
+    width: calc(100% - 40px);
+    margin: 20px auto;
+    padding: 22px 35px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+    background-color: rgba(15, 35, 20, 0.8);
+}
+
