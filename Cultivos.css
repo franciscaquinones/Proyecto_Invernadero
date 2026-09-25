@@ -62,3 +62,54 @@ footer {
     font-size: 14px;
     line-height: 1.8;
 }
+
+main {
+    width: 90%;
+    max-width: 1200px;
+    margin: 40px auto;
+}
+
+section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #1a1a1a;
+}
+
+section h2 {
+    margin-top: 0;
+    color: #c24f4f
+}
+
+label {
+    margin-right: 10px;
+}
+
+input[type="text"],
+select {
+    padding: 8px;
+    margin: 10px 12px 17px 5px;
+    background-color: #111111;
+    color: white;
+}
+
+button {
+    padding: 3px 15px;
+    background-color: #8b2020;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #a83232;
+}
+
+#Cultivos th,
+#Cultivos td {
+    padding: 12px;
+    border: 1px solid #444444;
+    text-align: center;
+}
+
+.Boton_De_Editar {
+    background-color: #555555;
+}
