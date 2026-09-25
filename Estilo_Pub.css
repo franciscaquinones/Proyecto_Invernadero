@@ -1,0 +1,115 @@
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    background-image: url("Fondo.jpeg");
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+header {
+    width: calc(100% - 40px);
+    margin: 20px auto;
+    padding: 22px 35px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+    background-color: rgba(15, 35, 20, 0.8);
+}
+
+#Logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+#Logo_Pub {
+    width: 70px;
+    height: auto;
+}
+
+header h1 {
+    font-family: 'Georgia', serif;
+    color: #dbf2e2;
+    font-size: 60px;
+    margin: 0;
+}
+
+#Boton_Login {
+    color: white;
+    background-color: #7a2020;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 12px 20px;
+}
+
+nav {
+    width: 90%;
+    margin: 10px auto;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 105px;
+    background-color: rgba(15, 35, 20, 0.75);
+}
+
+nav a {
+    color: #d9f5df;
+    font-weight: bold;
+    font-size: 22px;
+    padding: 10px 15px;
+}
+
+main {
+    width: 90%;
+    max-width: 1100px;
+    margin: 40px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+}
+
+section {
+    padding: 30px;
+    background-color: rgba(15, 35, 20, 0.82);
+}
+
+
+section h2 {
+    color: #45d274;
+    font-size: 32px;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+
+section p {
+    color: #e7f3e9;
+    font-size: 18px;
+    line-height: 1.7;
+    margin: 0;
+}
+
+section a {
+    color: #70e497;
+    font-weight: bold;
+}
+
+footer {
+    width: calc(100% - 40px);
+    margin: 40px auto 20px;
+    padding: 20px 30px;
+    background-color: rgba(15, 35, 20, 0.85);
+    text-align: center;
+}
+
+footer h3 {
+    margin: 0;
+    color: #d9f5df;
+    font-size: 16px;
+    line-height: 1.8;
+}
