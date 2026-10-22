@@ -7,9 +7,12 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# [IA] inicio · ia/2026-10-22_oscaroviedo-png_ignorar-node-modules.md
+node_modules/
+dist/
+dist-ssr/
+# [IA] fin
+
 *.local
 
 # Editor directories and files
