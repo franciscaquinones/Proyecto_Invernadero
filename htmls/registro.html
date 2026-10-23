@@ -2,12 +2,12 @@
 <html lang="es">
     <head>
         <meta charset="UTF-8">
-        <link rel="shortcut icon"  href="Logo_Pub.png">
-        <link rel="stylesheet" href="Estilo_Form.css">
+        <link rel="shortcut icon"  href="../imgs/Logo_Pub.png">
+        <link rel="stylesheet" href="../csss/Estilo_Form.css">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="main.js" defer></script>
+        <script src="../jss/inicio_sesion.js" defer></script>
         <title>
-            Umbrella Corps Botanics
+            Crear Cuenta
         </title>
     </head>
     <body>
@@ -15,17 +15,26 @@
             <h1>
                 Umbrella Corps Botanics
             </h1>
+            <p class="Subtitulo_Header">
+                Sistema de Gestión de Invernadero
+            </p>
         </header>
         <main>
             <section>
-                <h2>
-                    Crear cuenta en Umbrella Corps Botanics
-                </h2>
+                <p class="Aviso_Acceso">
+                    REGISTRO DE USUARIO
+                </p>
+                <h2>Crear cuenta</h2>
+                <p class="Descripcion_Form">
+                    Complete sus datos para registrarse en la plataforma.
+                </p>
                 <form id="Form_Reg">
                     <table>
                         <tr>
                             <th>
-                                Ingrese su nombre:
+                                <label for="Nombre">
+                                    Ingrese su nombre
+                                </label>
                             </th>
                             <td>
                                 <input type="text" 
@@ -37,7 +46,9 @@
                         </tr>
                         <tr>
                             <th>
-                                Ingrese su apellido:
+                                <label for="Apellido">
+                                    Ingrese su apellido
+                                </label>
                             </th>
                             <td>
                                 <input type="text"
@@ -49,7 +60,9 @@
                         </tr>
                         <tr>
                             <th>
-                                Ingrese su correo electrónico:
+                                <label for="Correo">
+                                    Ingrese su correo electrónico:
+                                </label>
                             </th>
                             <td>
                                 <input type="email"
@@ -61,7 +74,9 @@
                         </tr>
                         <tr>
                             <th>
-                                Ingrese una contraseña:
+                                <label for="Contrasena">
+                                    Ingrese una contraseña:
+                                </label>
                             </th>
                             <td>
                                 <input type="password"
@@ -73,7 +88,9 @@
                         </tr>
                         <tr>
                             <th>
-                                Confirme su contraseña:
+                                <label for="Confirmar_Contrasena">
+                                    Confirme su contraseña:
+                                </label>
                             </th>
                             <td>
                                 <input type="password"
@@ -98,11 +115,12 @@
                         Iniciar sesión
                     </a>
                 </p>
-                <a href="index.html">
+                <a href="../index.html">
                     Volver a Arklay Botanics
                 </a>
             </section>
         </main>
+        <hr>
         <footer>
             <h3>
                 Autores: Oscar Oviedo y Francisca Quiñones 
