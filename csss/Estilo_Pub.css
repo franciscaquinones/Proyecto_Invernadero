@@ -2,12 +2,33 @@ html {
     scroll-behavior: smooth;
 }
 
+/* [IA] inicio · ia/2026-10-22_oscaroviedo-png_fondo-difuminado.md */
+
 body {
     min-height: 100vh;
-    background-image: url("../imgs/Fondo.jpeg");
-    background-size: cover;
-    background-attachment: fixed;
 }
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: -10px;
+
+    background:
+        linear-gradient(
+            rgba(10, 40, 20, 0.35),
+            rgba(10, 40, 20, 0.35)
+        ),
+        url("../imgs/Fondo.jpeg");
+
+    background-size: cover;
+    background-position: center;
+    filter: blur(8px);
+    z-index: -1;
+}
+
+/* [IA] fin */
+
+
 
 header {
     width: calc(100% - 40px);
