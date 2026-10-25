@@ -1,0 +1,178 @@
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background-color: #07080a;
+    color: #eeeeee;
+}
+
+header {
+    width: calc(100% - 40px);
+    margin: 20px auto;
+    padding: 18px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    box-sizing: border-box;
+    background-color: #0e0f13;
+    border: 1px solid #23262c;
+    border-bottom: 2px solid #dc2626;
+    border-radius: 12px;
+}
+
+#Logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+#Logo_Pub {
+    width: 60px;
+    height: auto;
+}
+
+#Logo h1 {
+    margin: 0;
+    font-size: 30px;
+    font-weight: normal;
+    color: #eeeeee;
+}
+
+header table {
+    border-collapse: collapse;
+}
+
+header td {
+    padding: 0 8px;
+}
+
+header a {
+    color: #ce3b3b;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 9px 13px;
+    border-radius: 6px;
+    transition: 0.2s;
+}
+
+header a:hover {
+    color: rgb(243, 4, 4);
+    background-color: #1a1c22;
+}
+
+nav {
+    width: calc(100% - 40px);
+    margin: 10px auto 30px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    box-sizing: border-box;
+    background-color: #0e0f13;
+    border: 1px solid #23262c;
+    border-radius: 10px;
+}
+
+nav a {
+    color: #9a9aa2;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 6px;
+    transition: 0.2s;
+}
+
+nav a:hover {
+    color: white;
+    background-color: rgba(220, 38, 38, 0.12);
+}
+
+#Activo {
+    color: #f87171;
+    border-bottom: 2px solid #dc2626;
+}
+
+main {
+    width: 90%;
+    max-width: 1200px;
+    margin: 40px auto;
+}
+
+hr {
+    width: calc(100% - 40px);
+    margin: 40px auto 20px;
+    border: none;
+    border-top: 1px solid #7a2020;
+}
+
+footer {
+    width: calc(100% - 40px);
+    margin: 20px auto;
+    padding: 20px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+footer h3 {
+    margin: 0;
+    color: #888888;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.7;
+}
+
+@media (max-width: 900px) {
+
+    #Logo h1 {
+        font-size: 24px;
+    }
+
+    nav {
+        gap: 8px;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    header {
+        width: calc(100% - 20px);
+        flex-direction: column;
+        padding: 18px 12px;
+        text-align: center;
+    }
+
+    #Logo {
+        justify-content: center;
+    }
+
+    #Logo_Pub {
+        width: 45px;
+    }
+
+    #Logo h1 {
+        font-size: 20px;
+    }
+
+    nav {
+        width: calc(100% - 20px);
+        gap: 5px;
+    }
+
+    nav a {
+        font-size: 14px;
+        padding: 8px 10px;
+    }
+
+    main {
+        width: calc(100% - 20px);
+        margin: 25px auto;
+    }
+
+    footer {
+        width: calc(100% - 20px);
+    }
+
+}
