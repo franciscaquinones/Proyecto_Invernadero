@@ -1,84 +1,114 @@
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #0b0c0f;
-    color: #eeeeee;
-}
-
-header {
-    padding: 20px 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #202020;
-    text-align: center;
-}
-
-#Logo_Pub {
-    width: 55px;
-    height: auto;
-}
-
-#Logo h1 {
-    margin: 0;
-    font-size: 28px;
-}
-
-header a {
-    padding: 5px 10px;
-    color: #963232;
-    text-decoration: none;
-}
-
-header a:hover { /* El hover es para cuando se le coloca el mouse encima, se ve más bonito... */
-    color: white;
-}
-
-nav {
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    background-color: #000000;
-}
-
-nav a {
-    color: #963232;
-    text-decoration: none;
-}
-
-nav a:hover {
-    color: white;
-}
-
-#Activo {
-    color: #f03434f7;
-    border-bottom: 2px solid red;;
-}
-
-main h2 {
-    color: #eeeeee;
-}
+/* [IA] inicio · ia/2026-10-25_oscaroviedo-png_resumen-dashboard-css.md */
 
 #Resumen {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 20px;
-    text-align: center;
+    margin-bottom: 30px;
 }
 
+#Resumen > h2 {
+    grid-column: 1 / -1;
+    margin: 0 0 10px;
+    font-size: 28px;
+    color: #eeeeee;
+}
+
+/* [IA] fin */
+
 article {
-    padding: 20px;
-    background-color: rgb(52, 19, 19);
+    padding: 25px;
+    background-color: #131419;
+    border: 1px solid #23262c;
+    border-radius: 12px;
+    text-align: center;
+    transition: 0.2s;
+}
+
+article:hover {
+    border-color: rgba(220, 38, 38, 0.6);
+    transform: translateY(-3px);
+}
+
+article h3 {
+    margin: 0 0 15px;
+    color: #a9a9b0;
+    font-size: 17px;
+    font-weight: normal;
 }
 
 article p {
+    margin: 0;
+    color: #df2a2a;
+    font-size: 38px;
     font-weight: bold;
 }
 
-footer {
-    padding: 20px;
-    text-align: center;
-    font-size: 14px;
-    line-height: 1.8;
+#Actividad {
+    padding: 25px;
+
+    background-color: #0e0f13;
+    border: 1px solid #23262c;
+    border-radius: 12px;
+}
+
+#Actividad h2 {
+    margin-top: 0;
+    font-size: 24px;
+    color: #eeeeee;
+}
+
+#Actividad ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#Actividad li {
+    padding: 15px;
+    margin-top: 10px;
+    background-color: #131419;
+    border-left: 3px solid #dc2626;
+    border-radius: 5px;
+    color: #cccccc;
+}
+
+@media (max-width: 900px) {
+
+    /* [IA] inicio · ia/2026-10-25_oscaroviedo-png_resumen-dashboard-css.md */
+
+    #Resumen {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #Resumen article:last-of-type {
+        grid-column: 1 / -1;
+    }
+
+    /* [IA] fin */
+}
+
+@media (max-width: 600px) {
+
+    /* [IA] inicio · ia/2026-10-25_oscaroviedo-png_resumen-dashboard-css.md */
+
+    #Resumen {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    #Resumen article:last-of-type {
+        grid-column: auto;
+    }
+
+    #Resumen > h2 {
+        font-size: 24px;
+        text-align: center;
+    }
+
+    /* [IA] fin */
+
+    #Actividad {
+        padding: 18px;
+    }
 }
