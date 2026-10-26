@@ -2,111 +2,144 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <link rel="shortcut icon" href="Logo_Pub.png">
-    <link rel="stylesheet" href="admin.css">
+    <link rel="shortcut icon" href="../imgs/Logo_Pub.png">
+    <link rel="stylesheet" href="../csss/Estilo_Interno.css">
+    <link rel="stylesheet" href="../csss/Admin.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="main.js" defer></script>
+    <script src="../jss/main.js" defer></script>
     <title>
-        Panel de administrador
+        Panel De Administrador
     </title>
-    </head>
-    <body>
-        <header>
-            Umbrella Corps Botanics
-        </header>
-        <main>
-            <section>
-                <h2>
-                    Panel de administrador
-                </h2>
-                <p>
-                    bienvenido al panel de administrador de umbrella corps botanics, aqui podra ver toda la informacion de los usuarios, consultar los recursos asociados a estos, eliminar las cuentas o registros y consultar las estadísticas.
-                </p>
-            </section>
-            <section>
+</head>
+<body>
+    <header>
+
+        <div id="Logo">
+            <img src="../imgs/Logo_Pub.png" id="Logo_Pub" />
+            <h1>
+                Umbrella Corps Botanics
+            </h1>
+        </div>
+
+        <table>
+            <tr>
+                <td>
+                    Administrador
+                </td>
+                <td>
+                    <a href="login.html">
+                        Cerrar Sesión
+                    </a>
+                </td>
+            </tr>
+        </table>
+
+    </header>
+    <nav>
+        <a href="admin.html" id="Activo">
+            Panel Administrativo
+        </a>
+        <a href="#Estadisticas">
+            Estadísticas
+        </a>
+        <a href="#Usuarios">
+            Usuarios Registrados
+        </a>
+        <a href="#Cuentas">
+            Admministración de Cuentas
+        </a>
+    </nav>
+    <main>
+        <section>
             <h2>
-                Estadisticas
+                Panel de Administrador
             </h2>
+            <p>
+                Bienvenido al panel de administración de Umbrella Corps
+                Botanics. Desde aquí podrá consultar usuarios, revisar
+                sus recursos asociados, administrar cuentas y consultar
+                las estadísticas globales del sistema.
+            </p>
+        </section>
+
+        <section id="Estadisticas">
+
+            <h2>Estadísticas Globales</h2>
+
+            <div class="Tarjetas_Admin">
+
+                <article class="Tarjeta_Estadistica">
+                    <h3>Usuarios registrados</h3>
+                    <p>15</p>
+                </article>
+
+                <article class="Tarjeta_Estadistica">
+                    <h3>Cultivos registrados</h3>
+                <p>60</p>
+                </article>
+
+                <article class="Tarjeta_Estadistica">
+                    <h3>Sensores registrados</h3>
+                    <p>120</p>
+             </article>
+
+            </div>
+
+        </section>
+
+        <section id="Usuarios">
+            <h2>
+                Usuarios Registrados
+            </h2>
+            <div class="Tabla_Contenedor">
             <table>
                 <tr>
                     <th>
-                        Usuarios registrados
+                        Nombre
                     </th>
-                    <td> 15 </td>
+                    <th>
+                        Correo
+                    </th>
                 </tr>
                 <tr>
-                    <th>
-                        Cultivos registrados
-                    </th>
                     <td>
-                        60
+                        Oscar Oviedo
                     </td>
-                </tr>
-                <tr>
-                    <th>
-                        Sensores registrados
-                    </th>
                     <td>
-                        120
+                        ejemplo@oscar.com
                     </td>
                 </tr>
             </table>
-            </section>
-            <section>
-                <h2>
-                    Usuarios registrados
-                </h2>
-                <table>
-                    <tr>
-                        <th>
-                            Nombre
-                        </th>
-                        <th>
-                            Correo
-                        </th>
-                    </tr>
-                    <tr>
-                        <td>
-                            Oscar Oviedo
-                        </td>
-                        <td>
-                            ejemplo@oscar.com
-                        </td>
-                    </tr>
-                </table>
-            </section>
-            <section>
-                <h2>
-                    Administración de cuentas
-                </h2>
-                <p>
-                    En esta sección podrá eliminar las cuentas de los usuarios 
-                </p>
-                <input type="button"
-                value="Eliminar cuenta">
-            </section>
+            </div>
+        </section>
+        
+        <section id="Cuentas">
+            <h2>
+                Administración de Cuentas
+            </h2>
             <p>
-                <a href="index.html">
-                    Volver a Arklay Botanics
-                </a>
+                En esta sección podrá eliminar las cuentas de los usuarios 
             </p>
-            <p>
-                <a href="login.html">
-                    Cerrar sesión
-                </a>
-            </p>
-        </main>
-        <hr>
-        <footer>
-        <h3>
-            Autores: Oscar Oviedo y Francisca Quiñones
-            <br>
-            Contacto: contacto@arklaybotanics.com
-            <br>
-            Página oficial: www.stellawings.com
-            <br> 
-            Todos los derechos reservados ©
-        </h3>
-        </footer>
-    </body>
-    </html>
+            <input type="button"
+            value="Eliminar cuenta">
+        </section>
+        <p>
+            <a href="../index.html">
+                Volver a Arklay Botanics
+            </a>
+        </p>
+    </main>
+    <hr>
+    <footer>
+    <h3>
+        Autores: Oscar Oviedo y Francisca Quiñones
+        <br>
+        Contacto: contacto@arklaybotanics.com
+        <br>
+        Página oficial: www.stellawings.com
+        <br> 
+        Todos los derechos reservados ©
+    </h3>
+    </footer>
+</body>
+</html>
