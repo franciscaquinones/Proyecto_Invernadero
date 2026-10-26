@@ -3,12 +3,13 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="shortcut icon" href="Logo_Pub.png">
-    <link rel="stylesheet" href="Cultivos.css">
+    <link rel="shortcut icon" href="../imgs/Logo_Pub.png">
+    <link rel="stylesheet" href="../csss/Estilo_Interno.css">
+    <link rel="stylesheet" href="../csss/Historial.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="main.js" defer></script>
+    <script src="../jss/main.js" defer></script>
     <title>
-        Umbrella Corps Botanics
+        Historial - Umbrella Corps Botanics
     </title>
     <!-- Autores: Francisca Quiñones y Oscar Oviedo -->
     <!-- Proyecto Arklay Botanics -->
@@ -18,7 +19,7 @@
     <header>
 
         <div id="Logo">
-            <img src="Logo_Pub.png" id="Logo_Pub" />
+            <img src="../imgs/Logo_Pub.png" id="Logo_Pub" />
             <h1>
                 Umbrella Corps Botanics
             </h1>
@@ -30,7 +31,7 @@
                     Usuario
                 </td>
                 <td>
-                    <a href="Login.html">
+                    <a href="login.html">
                         Cerrar Sesión
                     </a>
                 </td>
@@ -41,16 +42,16 @@
 
     <nav>
 
-        <a href="Dashboard.html">
+        <a href="dashboard.html">
             Inicio
         </a>
-        <a href="Cultivos.html">
+        <a href="cultivos.html">
             Cultivos
         </a>
-        <a href="Sensores.html">
+        <a href="sensores.html">
             Sensores
         </a>
-        <a href="Historial.html" id="Actual">
+        <a href="historial.html" id="Activo">
             Historial
         </a>
 
@@ -71,6 +72,8 @@
         <section>
 
             <h2>Resumen de Mediciones:</h2>
+
+            <div class="Tarjetas_Resumen">
             <p>
                 Registros realizados: <strong>12</strong>
             </p>
@@ -83,13 +86,15 @@
             <p>
                 Luminosidad promedio: <strong>Nivel 734</strong>
             </p>
+            </div>
 
         </section>
 
 
-        <section>
+        <section id="Registro_Historial">
 
             <h2>Registro de Mediciones:</h2>
+            <div class="Tabla_Contenedor">
             <table>
                 <thead>
                     <tr>
@@ -144,6 +149,7 @@
                 </tbody>
 
             </table>
+            </div>
 
         </section>
 
@@ -170,7 +176,7 @@
             <br>
             Contacto: contacto@arklaybotanics.com
             <br>
-            Página Oficial: www.stelawings.com
+            Página Oficial: www.stellawings.com
             <br>
             Todos los derechos reservados ©
         </h3>
