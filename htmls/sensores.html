@@ -7,13 +7,13 @@
     <link rel="stylesheet" href="../csss/Estilo_Interno.css">
     <link rel="stylesheet" href="../csss/Sensores.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="../jss/main.js" defer></script>
+    <script src="../jss/Filtro_Sensores.js" defer></script>
     <title>
         Sensores - Umbrella Corps Botanics
     </title>
 </head>
 <body>
-     <header>
+    <header>
 
         <div id="Logo">
             <img src="../imgs/Logo_Pub.png" id="Logo_Pub" />
@@ -35,7 +35,7 @@
             </tr>
         </table>
     </header>
-     <nav>
+    <nav>
         <a href="dashboard.html">
             Inicio
         </a>
@@ -49,7 +49,7 @@
             Historial
         </a>
     </nav>
-     <main>
+    <main>
         <section>
             <h2>Vista y Administración de Sensores:</h2>
             <p>En esta pestaña puede ver, agregar, editar y eliminar los sensores asociados a su invernadero</p>
@@ -90,6 +90,7 @@
         </section>
         <section id="Sensores">
             <h2>Mis Sensores:</h2>
+            <div class="Tabla_Contenedor">
             <table>
                 <thead>
                     <tr>
@@ -137,9 +138,10 @@
                     </tr>
                 </tbody>
             </table>
+            </div>
         </section>
     </main>
-     <hr>
+    <hr>
     <footer>
         <h3>
             Autores: Oscar Oviedo y Francisca Quiñones
