@@ -1,0 +1,115 @@
+section {
+    margin-bottom: 30px;
+    padding: 25px;
+    background-color: #0e0f13;
+    border: 1px solid #23262c;
+    border-radius: 12px;
+}
+
+section h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #eeeeee;
+    font-size: 24px;
+}
+
+section p {
+    color: #cccccc;
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+.Tarjetas_Resumen {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.Tarjetas_Resumen p {
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    background-color: #131419;
+    border: 1px solid #23262c;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 14px;
+    color: #a9a9b0;
+    transition: 0.2s;
+}
+
+.Tarjetas_Resumen p:hover {
+    border-color: rgba(220, 38, 38, 0.6);
+    transform: translateY(-3px);
+}
+
+.Tarjetas_Resumen strong {
+    color: #df2a2a;
+    font-size: 28px;
+}
+
+.Tabla_Contenedor {
+    width: 100%;
+    overflow-x: auto;
+}
+
+#Registro_Historial table {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: collapse;
+}
+
+#Registro_Historial th,
+#Registro_Historial td {
+    padding: 12px;
+    border: 1px solid #1e1f22;
+    text-align: left;
+}
+
+#Registro_Historial th {
+    background-color: #1a1c22;
+    color: #e25757;
+    font-size: 14px;
+}
+
+#Registro_Historial td {
+    background-color: #131419;
+    color: #dddddd;
+    font-size: 14px;
+}
+
+#Registro_Historial tbody tr:hover td {
+    background-color: #181c2d;
+}
+
+@media (max-width: 900px) {
+
+    .Tarjetas_Resumen {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    section {
+        padding: 18px;
+    }
+
+    section h2 {
+        font-size: 21px;
+    }
+
+    .Tarjetas_Resumen {
+        grid-template-columns: 1fr;
+    }
+
+    .Tarjetas_Resumen strong {
+        font-size: 26px;
+    }
+
+}

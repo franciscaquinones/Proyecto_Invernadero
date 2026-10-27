@@ -1,0 +1,147 @@
+html {
+    scroll-behavior: smooth;
+}
+
+main section {
+    margin-bottom: 30px;
+    padding: 25px;
+    background-color: #0e0f13;
+    border: 1px solid #23262c;
+    border-radius: 12px;
+}
+
+main section h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #eeeeee;
+    font-size: 24px;
+}
+
+main section p {
+    color: #cccccc;
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+.Tabla_Contenedor {
+    width: 100%;
+    overflow-x: auto;
+}
+
+main table {
+    width: 100%;
+    min-width: 500px;
+    margin-top: 15px;
+    border-collapse: collapse;
+}
+
+main th,
+main td {
+    padding: 12px;
+    border: 1px solid #1e1f22;
+    text-align: left;
+}
+
+main th {
+    background-color: #1a1c22;
+    color: #e25757;
+    font-size: 14px;
+}
+
+main td {
+    background-color: #131419;
+    color: #dddddd;
+}
+
+main tr:hover td {
+    background-color: #181c2d;
+}
+
+main a {
+    color: #e25757;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transition: 0.2s;
+}
+
+main a:hover {
+    color: #ff8585;
+}
+
+main a:focus-visible {
+    outline: 2px solid #c85c5c;
+    outline-offset: 3px;
+}
+
+.Tarjetas_Admin {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.Tarjeta_Estadistica {
+    padding: 25px;
+    background-color: #131419;
+    border: 1px solid #23262c;
+    border-radius: 12px;
+    text-align: center;
+    transition: 0.2s;
+}
+
+.Tarjeta_Estadistica:hover {
+    border-color: rgba(220, 38, 38, 0.6);
+    transform: translateY(-3px);
+}
+
+.Tarjeta_Estadistica h3 {
+    margin: 0 0 15px;
+    color: #a9a9b0;
+    font-size: 17px;
+    font-weight: normal;
+}
+
+.Tarjeta_Estadistica p {
+    margin: 0;
+    color: #df2a2a;
+    font-size: 38px;
+    font-weight: bold;
+}
+
+@media (max-width: 600px) {
+
+    main section {
+        padding: 18px;
+    }
+
+    main section h2 {
+        font-size: 21px;
+    }
+
+    main th,
+    main td {
+        padding: 10px;
+    }
+
+    .Tarjetas_Admin {
+    grid-template-columns: 1fr;
+    }
+
+    .Tarjeta_Estadistica:last-child {
+        grid-column: auto;
+    }
+
+    .Tarjeta_Estadistica p {
+        font-size: 32px;
+    }
+}
+
+@media (max-width: 900px) {
+
+    .Tarjetas_Admin {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .Tarjeta_Estadistica:last-child {
+        grid-column: 1 / -1;
+    }
+}

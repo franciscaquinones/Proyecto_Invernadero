@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="../imgs/Logo_Pub.png">
+    <link rel="stylesheet" href="../csss/Estilo_Interno.css">
+    <link rel="stylesheet" href="../csss/Sensores.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../jss/Filtro_Sensores.js" defer></script>
+    <title>
+        Sensores - Umbrella Corps Botanics
+    </title>
+</head>
+<body>
+    <header>
+
+        <div id="Logo">
+            <img src="../imgs/Logo_Pub.png" id="Logo_Pub" />
+            <h1>
+                Umbrella Corps Botanics
+            </h1>
+        </div>
+
+        <table>
+            <tr>
+                <td>
+                    Usuario
+                </td>
+                <td>
+                    <a href="login.html">
+                        Cerrar Sesión
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </header>
+    <nav>
+        <a href="dashboard.html">
+            Inicio
+        </a>
+        <a href="cultivos.html">
+            Cultivos
+        </a>
+        <a href="sensores.html" id="Activo">
+            Sensores
+        </a>
+        <a href="historial.html">
+            Historial
+        </a>
+    </nav>
+    <main>
+        <section>
+            <h2>Vista y Administración de Sensores:</h2>
+            <p>En esta pestaña puede ver, agregar, editar y eliminar los sensores asociados a su invernadero</p>
+        </section>
+        <section>
+            <h2>Buscar Sensor:</h2>
+            <form>
+                <label for="Busqueda">Nombre del sensor: </label>
+                <input type="text" id="Busqueda" name="Busqueda" placeholder="Ej: S-02">
+                <br>
+                <label for="Tipo">Tipo: </label>
+                <select id="Tipo" name="Tipo">
+                    <option value="Todos">Todos</option>
+                    <option value="Temperatura">Temperatura</option>
+                    <option value="Humedad">Humedad</option>
+                    <option value="Luminosidad">Luminosidad</option>
+                </select>
+                <label for="Ubicacion">Ubicación: </label>
+                <select id="Ubicacion" name="Ubicacion">
+                    <option value="Todos">Todos</option>
+                    <option value="Sector Alpha">Sector Alpha</option>
+                    <option value="Sector Beta">Sector Beta</option>
+                    <option value="Sector Falco">Sector Falco</option>
+                    <option value="Sector Delta">Sector Delta</option>
+                    <option value="Sector Gamma">Sector Gamma</option>
+                </select>
+                <label for="Estado">Estado: </label>
+                <select id="Estado" name="Estado">
+                    <option value="Todos">Todos</option>
+                    <option value="Activo">Activo</option>
+                    <option value="Inactivo">Inactivo</option>
+                    <option value="Mantenimiento">Mantenimiento</option>
+                </select>
+                <button type="button" id="Boton_De_Filtro_Sensor">Filtrar</button>
+                <br>
+                <button type="button" id="Boton_De_Agregar_Sensor">Para agregar sensor, haz clic aquí</button>
+            </form>
+        </section>
+        <section id="Sensores">
+            <h2>Mis Sensores:</h2>
+            <div class="Tabla_Contenedor">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Ubicación</th>
+                        <th>Estado</th>
+                        <th>Última Medición</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="LISTA_DE_SENSORES">
+                    <tr>
+                        <td>S-01</td>
+                        <td>Temperatura</td>
+                        <td>Sector Alpha</td>
+                        <td>Activo</td>
+                        <td>55 °C</td>
+                        <td>
+                            <button type="button" class="Boton_De_Editar">Modificar</button>
+                            <button type="button" class="Boton_De_Eliminar">Eliminar</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>S-02</td>
+                        <td>Humedad</td>
+                        <td>Sector Beta</td>
+                        <td>Inactivo</td>
+                        <td>77%</td>
+                        <td>
+                            <button type="button" class="Boton_De_Editar">Modificar</button>     
+                            <button type="button" class="Boton_De_Eliminar">Eliminar</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>S-03</td>
+                        <td>Luminosidad</td>
+                        <td>Sector Alpha</td>
+                        <td>Mantenimiento</td>
+                        <td>Nivel: 666 </td>
+                        <td>
+                            <button type="button" class="Boton_De_Editar">Modificar</button>
+                            <button type="button" class="Boton_De_Eliminar">Eliminar</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+        </section>
+    </main>
+    <hr>
+    <footer>
+        <h3>
+            Autores: Oscar Oviedo y Francisca Quiñones
+            <br>
+            Contacto: contacto@arklaybotanics.com
+            <br>
+            Página Oficial: www.stellawings.com
+            <br>
+            Todos los derechos reservados ©
+        </h3>
+
+    </footer>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="shortcut icon"  href="../imgs/Logo_Pub.png">
+        <link rel="stylesheet" href="../csss/Estilo_Form.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="../jss/inicio_sesion.js" defer></script>
+        <title>
+            Crear Cuenta
+        </title>
+    </head>
+    <body>
+        <header>
+            <h1>
+                Umbrella Corps Botanics
+            </h1>
+            <p class="Subtitulo_Header">
+                Sistema de Gestión de Invernadero
+            </p>
+        </header>
+        <main>
+            <section>
+                <p class="Aviso_Acceso">
+                    REGISTRO DE USUARIO
+                </p>
+                <h2>Crear cuenta</h2>
+                <p class="Descripcion_Form">
+                    Complete sus datos para registrarse en la plataforma.
+                </p>
+                <form id="Form_Reg">
+                    <table>
+                        <tr>
+                            <th>
+                                <label for="Nombre">
+                                    Ingrese su nombre
+                                </label>
+                            </th>
+                            <td>
+                                <input type="text" 
+                                id="Nombre"
+                                name="Nombre"
+                                placeholder="Ingrese su nombre"
+                                required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label for="Apellido">
+                                    Ingrese su apellido
+                                </label>
+                            </th>
+                            <td>
+                                <input type="text"
+                                id="Apellido"
+                                name="Apellido"
+                                placeholder="Ingrese su apellido"
+                                required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label for="Correo">
+                                    Ingrese su correo electrónico:
+                                </label>
+                            </th>
+                            <td>
+                                <input type="email"
+                                id="Correo"
+                                name="Correo"
+                                placeholder="Ejemplo@dominio.com"
+                                required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label for="Contrasena">
+                                    Ingrese una contraseña:
+                                </label>
+                            </th>
+                            <td>
+                                <input type="password"
+                                id="Contrasena"
+                                name="Contrasena"
+                                placeholder="Ingrese su contraseña"
+                                required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label for="Confirmar_Contrasena">
+                                    Confirme su contraseña:
+                                </label>
+                            </th>
+                            <td>
+                                <input type="password"
+                                id="Confirmar_Contrasena"
+                                name="Confirmar_Contrasena"
+                                placeholder="Repita su contraseña"
+                                required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <td>
+                            <input type="submit"
+                            value="Crear cuenta">
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+                <p>
+                    ¿Ya tienes una cuenta?
+                    <a href="login.html">
+                        Iniciar sesión
+                    </a>
+                </p>
+                <a href="../index.html">
+                    Volver a Arklay Botanics
+                </a>
+            </section>
+        </main>
+        <hr>
+        <footer>
+            <h3>
+                Autores: Oscar Oviedo y Francisca Quiñones 
+                <br> Contacto: contacto@arklaybotanics.com
+                <br> Página oficial: www.stellawings.com 
+                <br> Todos los derechos reservados ©
+            </h3>
+        </footer>
+    </body>
+</html>
