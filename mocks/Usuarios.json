@@ -1,0 +1,74 @@
+[
+    {
+        "id": "User_001",
+        "nombre": "Jill",
+        "apellido": "Valentine",
+        "correo": "jill@umbrellabotanics.try",
+        "contrasena": "Jill123",
+        "rol": "usuario",
+        "estado": "Activo"
+    },
+    {
+        "id": "User_002",
+        "nombre": "Rebecca",
+        "apellido": "Chambers",
+        "correo": "rebecca@umbrellabotanics.try",
+        "contrasena": "Rebecca123",
+        "rol": "usuario",
+        "estado": "Activo"
+    },
+    {
+        "id": "User_003",
+        "nombre": "Albert",
+        "apellido": "Wesker",
+        "correo": "admin@umbrellabotanics.com",
+        "contrasena": "admin",
+        "rol": "administrador",
+        "estado": "Activo"
+    },
+    {
+        "id": "User_004",
+        "nombre": "Leon",
+        "apellido": "S. Kennedy",
+        "correo": "leon@umbrellabotanics.try",
+        "contrasena": "Leon123",
+        "rol": "usuario",
+        "estado": "Activo"
+    },
+    {
+        "id": "User_005",
+        "nombre": "Chris",
+        "apellido": "Redfield",
+        "correo": "chris@umbrellabotanics.try",
+        "contrasena": "Chris123",
+        "rol": "usuario",
+        "estado": "Activo"
+    },
+    {
+        "id": "User_006",
+        "nombre": "Ada",
+        "apellido": "Wong",
+        "correo": "ada@umbrellabotanics.try",
+        "contrasena": "Ada123",
+        "rol": "usuario",
+        "estado": "Activo"
+    },
+    {
+        "id": "User_007",
+        "nombre": "Ethan",
+        "apellido": "Winters",
+        "correo": "ethan@umbrellabotanics.try",
+        "contrasena": "Ethan123",
+        "rol": "usuario",
+        "estado": "Inactivo"
+    },
+    {
+        "id": "User_008",
+        "nombre": "Ozwell",
+        "apellido": "E. Spencer",
+        "correo": "ozwell@umbrellabotanics.com",
+        "contrasena": "admin",
+        "rol": "administrador",
+        "estado": "Inactivo"
+    }
+]

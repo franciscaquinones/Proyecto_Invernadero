@@ -1,0 +1,110 @@
+[
+    {
+        "id": "SEN-001",
+        "nombre": "S-01",
+        "tipo": "Temperatura",
+        "ubicacion": "Sector Alpha",
+        "estado": "Activo",
+        "unidad": "°C",
+        "invernaderoId": "INV-001"
+    },
+    {
+        "id": "SEN-002",
+        "nombre": "S-02",
+        "tipo": "Humedad",
+        "ubicacion": "Sector Beta",
+        "estado": "Inactivo",
+        "unidad": "%",
+        "invernaderoId": "INV-001"
+    },
+    {
+        "id": "SEN-003",
+        "nombre": "S-03",
+        "tipo": "Luminosidad",
+        "ubicacion": "Sector Alpha",
+        "estado": "Mantenimiento",
+        "unidad": "lux",
+        "invernaderoId": "INV-001"
+    },
+    {
+        "id": "SEN-004",
+        "nombre": "S-04",
+        "tipo": "Temperatura",
+        "ubicacion": "Sector Delta",
+        "estado": "Activo",
+        "unidad": "°C",
+        "invernaderoId": "INV-002"
+    },
+    {
+        "id": "SEN-005",
+        "nombre": "S-05",
+        "tipo": "Humedad",
+        "ubicacion": "Sector Gamma",
+        "estado": "Activo",
+        "unidad": "%",
+        "invernaderoId": "INV-002"
+    },
+    {
+        "id": "SEN-006",
+        "nombre": "S-06",
+        "tipo": "Luminosidad",
+        "ubicacion": "Sector Falco",
+        "estado": "Activo",
+        "unidad": "lux",
+        "invernaderoId": "INV-002"
+    },
+    {
+        "id": "SEN-007",
+        "nombre": "S-07",
+        "tipo": "Temperatura",
+        "ubicacion": "Sector Alpha",
+        "estado": "Activo",
+        "unidad": "°C",
+        "invernaderoId": "INV-003"
+    },
+    {
+        "id": "SEN-008",
+        "nombre": "S-08",
+        "tipo": "Humedad",
+        "ubicacion": "Sector Beta",
+        "estado": "Activo",
+        "unidad": "%",
+        "invernaderoId": "INV-003"
+    },
+    {
+        "id": "SEN-009",
+        "nombre": "S-09",
+        "tipo": "Temperatura",
+        "ubicacion": "Sector Delta",
+        "estado": "Activo",
+        "unidad": "°C",
+        "invernaderoId": "INV-004"
+    },
+    {
+        "id": "SEN-010",
+        "nombre": "S-10",
+        "tipo": "Luminosidad",
+        "ubicacion": "Sector Gamma",
+        "estado": "Activo",
+        "unidad": "lux",
+        "invernaderoId": "INV-004"
+    },
+    {
+        "id": "SEN-011",
+        "nombre": "S-11",
+        "tipo": "Humedad",
+        "ubicacion": "Sector Falco",
+        "estado": "Activo",
+        "unidad": "%",
+        "invernaderoId": "INV-005"
+    },
+    {
+        "id": "SEN-012",
+        "nombre": "S-12",
+        "tipo": "Temperatura",
+        "ubicacion": "Sector Alpha",
+        "estado": "Mantenimiento",
+        "unidad": "°C",
+        "invernaderoId": "INV-006"
+    }
+]

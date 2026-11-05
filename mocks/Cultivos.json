@@ -1,0 +1,92 @@
+[
+    {
+        "id": "C-001",
+        "nombre": "Uroboros",
+        "tipo": "Virus",
+        "estado": "Activo",
+        "nivelCuarentena": 8,
+        "fechaIncubacion": "2020-10-07",
+        "invernaderoId": "INV-001"
+    },
+    {
+        "id": "C-002",
+        "nombre": "Progenitor",
+        "tipo": "Virus",
+        "estado": "Finalizado",
+        "nivelCuarentena": 5,
+        "fechaIncubacion": "1996-09-27",
+        "invernaderoId": "INV-001"
+    },
+    {
+        "id": "C-003",
+        "nombre": "Licker Alpha",
+        "tipo": "Biológico",
+        "estado": "Experimental",
+        "nivelCuarentena": 9,
+        "fechaIncubacion": "2023-12-05",
+        "invernaderoId": "INV-001"
+    },
+    {
+        "id": "C-004",
+        "nombre": "Virus - G",
+        "tipo": "Virus",
+        "estado": "En Desarrollo",
+        "nivelCuarentena": 10,
+        "fechaIncubacion": "1998-09-29",
+        "invernaderoId": "INV-001"
+    },
+    {
+        "id": "C-005",
+        "nombre": "Las Plagas",
+        "tipo": "Parásito",
+        "estado": "Finalizado",
+        "nivelCuarentena": 6,
+        "fechaIncubacion": "2004-10-07",
+        "invernaderoId": "INV-001"
+    },
+    {
+        "id": "C-006",
+        "nombre": "Virus - T",
+        "tipo": "Virus",
+        "estado": "Activo",
+        "nivelCuarentena": 8,
+        "fechaIncubacion": "1998-09-25",
+        "invernaderoId": "INV-001"
+    },
+    {
+        "id": "C-007",
+        "nombre": "NE - Alfa",
+        "tipo": "Parásito",
+        "estado": "Activo",
+        "nivelCuarentena": 10,
+        "fechaIncubacion": "1998-09-27",
+        "invernaderoId": "INV-002"
+    },
+    {
+        "id": "C-008",
+        "nombre": "Megamiceta",
+        "tipo": "Hongo",
+        "estado": "Finalizado",
+        "nivelCuarentena": 6,
+        "fechaIncubacion": "1919-05-15",
+        "invernaderoId": "INV-002"
+    },
+    {
+        "id": "C-009",
+        "nombre": "Virus T - Veronica",
+        "tipo": "Virus",
+        "estado": "En Desarrollo",
+        "nivelCuarentena": 6,
+        "fechaIncubacion": "1983-04-12",
+        "invernaderoId": "INV-002"
+    },
+    {
+        "id": "C-010",
+        "nombre": "Licker Beta",
+        "tipo": "Biológico",
+        "estado": "Activo",
+        "nivelCuarentena": 5,
+        "fechaIncubacion": "2009-04-24",
+        "invernaderoId": "INV-002"
+    }
+]

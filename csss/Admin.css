@@ -107,6 +107,17 @@ main a:focus-visible {
     font-weight: bold;
 }
 
+@media (max-width: 900px) {
+
+    .Tarjetas_Admin {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .Tarjeta_Estadistica:last-child {
+        grid-column: 1 / -1;
+    }
+}
+
 @media (max-width: 600px) {
 
     main section {
@@ -132,16 +143,5 @@ main a:focus-visible {
 
     .Tarjeta_Estadistica p {
         font-size: 32px;
-    }
-}
-
-@media (max-width: 900px) {
-
-    .Tarjetas_Admin {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .Tarjeta_Estadistica:last-child {
-        grid-column: 1 / -1;
     }
 }

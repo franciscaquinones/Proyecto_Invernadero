@@ -1,34 +1,131 @@
-//Función de busqueda junto con fase abajito...
+/* BUSQUEDA, FILTROS Y ORDENAMIENTO DE CULTIVOS */
+
 const ListaDeCultivos = document.getElementById("LISTA_DE_CULTIVOS");
 const BotonDeFiltro = document.getElementById("Boton_De_Filtro");
+const BotonDeLimpiarFiltros = document.getElementById("Boton_De_Limpiar_Filtros");
+const FormularioFiltros = document.getElementById("Formulario_Filtros");
 
-if (ListaDeCultivos && BotonDeFiltro) {
+if (ListaDeCultivos && BotonDeFiltro && FormularioFiltros) {
 
-    BotonDeFiltro.addEventListener("click", function () {
+    // Guarda el orden original de cada fila.
+    const OrdenOriginal = new WeakMap();
+    let SiguienteIndice = 0;
 
-        const Busqueda = document.getElementById("Busqueda").value.toLowerCase(); //Lo pasa a minuscula para que no se haga problema con eso
+    // Permite comparar textos sin importar tildes o mayusculas.
+    function NormalizarTexto(Texto) {
+        return Texto.normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()
+            .trim();
+    }
+
+    function AplicarFiltros() {
+
+        const Busqueda = NormalizarTexto(
+            document.getElementById("Busqueda").value
+        );
+
         const Fase = document.getElementById("Fase").value;
-        const Filas = ListaDeCultivos.querySelectorAll("tr");
+        const Tipo = NormalizarTexto(
+            document.getElementById("Tipo").value
+        );
+        const Orden = document.getElementById("Orden").value;
 
+        const Filas = Array.from(
+            ListaDeCultivos.querySelectorAll("tr")
+        );
+
+        // Recordamos la posicion original de cada cultivo.
         Filas.forEach(function (Fila) {
 
-            const Nombre = Fila.cells[0].textContent.toLowerCase();
-            const Estado = Fila.cells[2].textContent;
+            if (!OrdenOriginal.has(Fila)) {
+                OrdenOriginal.set(Fila, SiguienteIndice++);
+            }
 
-            const CoincideElNombre = Nombre.includes(Busqueda);
+        });
 
-            const CoincideLaFase = Fase === "Todos" || Estado === Fase;
+        // ORDENAMIENTO
+        Filas.sort(function (FilaA, FilaB) {
 
-            if (CoincideElNombre && CoincideLaFase) {
+            const NombreA = FilaA.cells[0].textContent.trim();
+            const NombreB = FilaB.cells[0].textContent.trim();
+
+            if (Orden === "Nombre_ASC") {
+                return NombreA.localeCompare(NombreB, "es", {
+                    sensitivity: "base"
+                });
+            }
+
+            if (Orden === "Nombre_DESC") {
+                return NombreB.localeCompare(NombreA, "es", {
+                    sensitivity: "base"
+                });
+            }
+
+            return OrdenOriginal.get(FilaA) -
+                   OrdenOriginal.get(FilaB);
+
+        });
+
+        // BUSQUEDA Y FILTRADO
+        Filas.forEach(function (Fila) {
+
+            const NombreCultivo = NormalizarTexto(
+                Fila.cells[0].textContent
+            );
+
+            const TipoCultivo = NormalizarTexto(
+                Fila.cells[1].textContent
+            );
+
+            const EstadoCultivo = Fila.cells[2].textContent.trim();
+
+            const CoincideNombre = NombreCultivo.includes(Busqueda);
+
+            const CoincideEstado =
+                Fase === "Todos" || EstadoCultivo === Fase;
+
+            const CoincideTipo =
+                Tipo === "todos" || TipoCultivo === Tipo;
+
+            if (CoincideNombre && CoincideEstado && CoincideTipo) {
                 Fila.style.display = "";
             }
             else {
                 Fila.style.display = "none";
             }
 
+            ListaDeCultivos.appendChild(Fila);
+
         });
 
+    }
+
+    // BOTON APLICAR FILTROS
+    BotonDeFiltro.addEventListener("click", AplicarFiltros);
+
+    // Evita que Enter recargue la pagina.
+    FormularioFiltros.addEventListener("submit", function (E) {
+        E.preventDefault();
+        AplicarFiltros();
     });
+
+    // BOTON LIMPIAR FILTROS
+    if (BotonDeLimpiarFiltros) {
+
+        BotonDeLimpiarFiltros.addEventListener("click", function (E) {
+
+            E.preventDefault();
+
+            FormularioFiltros.reset();
+            AplicarFiltros();
+
+        });
+
+    }
+
+    // Muestra inicialmente todos los cultivos.
+    AplicarFiltros();
 
 }
 
@@ -93,6 +190,7 @@ if (BotonDeAgregar && ListaDeCultivos) {
         Acciones.innerHTML = `<button type="button" class="Boton_De_Editar">Modificar</button>
             <button type="button" class="Boton_De_Eliminar">Purgar</button>`;
         ListaDeCultivos.appendChild(Fila);
+        BotonDeFiltro.click();
 
     });
 
@@ -136,7 +234,7 @@ if (ListaDeCultivos) {
             const NombreActual = Fila.cells[0].textContent;
             const TipoActual = Fila.cells[1].textContent;
             const EstadoActual = Fila.cells[2].textContent;
-            const CuarentenaActual = Fila.cells[3].textContent;
+            const CuarentenaActual = Fila.cells[3].textContent.replace("/10", "").trim();
             const FechaActual = Fila.cells[4].textContent;
 
 

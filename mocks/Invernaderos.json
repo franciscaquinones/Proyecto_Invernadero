@@ -1,0 +1,45 @@
+
+[
+    {
+        "id": "INV-001",
+        "nombre": "Instalación Alpha",
+        "ubicacion": "Montañas Arklay",
+        "estado": "Operativo",
+        "usuarioId": "User_001"
+    },
+    {
+        "id": "INV-002",
+        "nombre": "Instalación Beta",
+        "ubicacion": "Raccoon City",
+        "estado": "Operativo",
+        "usuarioId": "User_002"
+    },
+    {
+        "id": "INV-003",
+        "nombre": "Laboratorio NEST",
+        "ubicacion": "Subterráneos de Raccoon City",
+        "estado": "Operativo",
+        "usuarioId": "User_004"
+    },
+    {
+        "id": "INV-004",
+        "nombre": "Laboratorio Tricell",
+        "ubicacion": "África",
+        "estado": "Operativo",
+        "usuarioId": "User_005"
+    },
+    {
+        "id": "INV-005",
+        "nombre": "Sector Umbra",
+        "ubicacion": "Instalación Subterránea de ******",
+        "estado": "Operativo",
+        "usuarioId": "User_006"
+    },
+    {
+        "id": "INV-006",
+        "nombre": "Complejo Dulvey",
+        "ubicacion": "Dulvey, Louisiana",
+        "estado": "Mantenimiento",
+        "usuarioId": "User_007"
+    }
+]
