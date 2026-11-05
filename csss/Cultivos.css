@@ -41,6 +41,31 @@ select:focus {
     outline-offset: 2px;
 }
 
+.Campos_Filtro {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.Campo_Filtro {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.Campo_Filtro input,
+.Campo_Filtro select {
+    width: 100%;
+    margin: 0;
+}
+
+.Acciones_Filtro {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 25px;
+}
+
 button {
     padding: 10px 16px;
     background-color: #7a2020;
@@ -56,6 +81,7 @@ button {
 #Boton_De_Agregar {
     background-color: #4f258b;
     border-color: #50545e;
+    margin-top: 25px;
 }
 
 #Boton_De_Agregar:hover {
@@ -69,6 +95,15 @@ button:hover {
 button:focus-visible {
     outline: 2px solid #c85c5c;
     outline-offset: 3px;
+}
+
+#Boton_De_Limpiar_Filtros {
+    background-color: #343840;
+    border-color: #50545e;
+}
+
+#Boton_De_Limpiar_Filtros:hover {
+    background-color: #50545e;
 }
 
 #Cultivos table {
@@ -149,6 +184,14 @@ button:focus-visible {
         width: 100%;
         max-width: 100%;
         margin: 10px 0;
+    }
+
+    .Campos_Filtro {
+        grid-template-columns: 1fr;
+    }
+    
+    .Acciones_Filtro {
+        flex-direction: column;
     }
 
 }

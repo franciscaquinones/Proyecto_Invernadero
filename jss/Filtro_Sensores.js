@@ -1,10 +1,12 @@
 // Función de búsqueda y filtrado de sensores
 const ListaDeSensores = document.getElementById("LISTA_DE_SENSORES");
 const BotonDeFiltroSensor = document.getElementById("Boton_De_Filtro_Sensor");
+const FormularioFiltrosSensores = document.getElementById("Formulario_Filtros_Sensores");
+const BotonDeLimpiarFiltrosSensores = document.getElementById("Boton_De_Limpiar_Filtros_Sensores");
 
-if (ListaDeSensores && BotonDeFiltroSensor) {
+if (ListaDeSensores && BotonDeFiltroSensor && FormularioFiltrosSensores && BotonDeLimpiarFiltrosSensores) {
 
-    BotonDeFiltroSensor.addEventListener("click", function () {
+    function AplicarFiltrosSensores() {
 
         const Busqueda = document.getElementById("Busqueda").value.trim().toLowerCase();
         const Tipo = document.getElementById("Tipo").value;
@@ -37,6 +39,16 @@ if (ListaDeSensores && BotonDeFiltroSensor) {
 
         });
 
+    };
+
+    FormularioFiltrosSensores.addEventListener("submit", function (E) {
+        E.preventDefault();
+        AplicarFiltrosSensores();
+    });
+
+    BotonDeLimpiarFiltrosSensores.addEventListener("click", function () {
+        FormularioFiltrosSensores.reset();
+        AplicarFiltrosSensores();
     });
 
 }

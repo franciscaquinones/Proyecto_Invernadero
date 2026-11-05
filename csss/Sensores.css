@@ -41,6 +41,31 @@ select:focus {
     outline-offset: 2px;
 }
 
+.Campos_Filtro {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    min-width: 0;
+}
+
+.Campo_Filtro label {
+    display: block;
+    margin: 0 0 8px;
+}
+
+.Campo_Filtro input,
+.Campo_Filtro select {
+    width: 100%;
+    margin: 0;
+}
+
+.Acciones_Filtro {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+}
+
 button {
     padding: 10px 16px;
     background-color: #7a2020;
@@ -53,15 +78,6 @@ button {
     transition: 0.2s;
 }
 
-#Boton_De_Agregar_Sensor {
-    background-color: #4f258b;
-    border-color: #50545e;
-}
-
-#Boton_De_Agregar_Sensor:hover {
-    background-color: #6b3aa8;
-}
-
 button:hover {
     background-color: #a83232;
 }
@@ -71,8 +87,33 @@ button:focus-visible {
     outline-offset: 3px;
 }
 
+#Boton_De_Limpiar_Filtros_Sensores {
+    background-color: #343840;
+    border-color: #50545e;
+}
+
+#Boton_De_Limpiar_Filtros_Sensores:hover {
+    background-color: #50545e;
+}
+
+#Boton_De_Agregar_Sensor {
+    margin-top: 20px;
+    background-color: #4f258b;
+    border-color: #50545e;
+}
+
+#Boton_De_Agregar_Sensor:hover {
+    background-color: #6b3aa8;
+}
+
+.Tabla_Contenedor {
+    width: 100%;
+    overflow-x: auto;
+}
+
 #Sensores table {
     width: 100%;
+    min-width: 750px;
     border-collapse: collapse;
 }
 
@@ -116,15 +157,6 @@ button:focus-visible {
     background-color: #a83232;
 }
 
-.Tabla_Contenedor {
-    width: 100%;
-    overflow-x: auto;
-}
-
-#Sensores table {
-    min-width: 750px;
-}
-
 @media (max-width: 600px) {
 
     section {
@@ -135,9 +167,8 @@ button:focus-visible {
         font-size: 21px;
     }
 
-    input[type="text"],
-    select {
-        max-width: 100%;
+    .Campos_Filtro {
+        grid-template-columns: 1fr;
     }
 
     form button {

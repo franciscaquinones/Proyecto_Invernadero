@@ -1,0 +1,129 @@
+
+[
+    {
+        "id": "REG-001",
+        "sensorId": "SEN-001",
+        "fecha": "2026-09-22",
+        "hora": "08:00",
+        "valor": 24.8
+    },
+    {
+        "id": "REG-002",
+        "sensorId": "SEN-002",
+        "fecha": "2026-09-22",
+        "hora": "08:05",
+        "valor": 74
+    },
+    {
+        "id": "REG-003",
+        "sensorId": "SEN-003",
+        "fecha": "2026-09-22",
+        "hora": "08:10",
+        "valor": 698
+    },
+    {
+        "id": "REG-004",
+        "sensorId": "SEN-004",
+        "fecha": "2026-09-22",
+        "hora": "08:15",
+        "valor": 23.5
+    },
+    {
+        "id": "REG-005",
+        "sensorId": "SEN-005",
+        "fecha": "2026-09-22",
+        "hora": "08:20",
+        "valor": 68
+    },
+    {
+        "id": "REG-006",
+        "sensorId": "SEN-006",
+        "fecha": "2026-09-22",
+        "hora": "08:25",
+        "valor": 810
+    },
+    {
+        "id": "REG-007",
+        "sensorId": "SEN-007",
+        "fecha": "2026-09-22",
+        "hora": "08:30",
+        "valor": 22.1
+    },
+    {
+        "id": "REG-008",
+        "sensorId": "SEN-008",
+        "fecha": "2026-09-22",
+        "hora": "08:35",
+        "valor": 65
+    },
+    {
+        "id": "REG-009",
+        "sensorId": "SEN-009",
+        "fecha": "2026-09-22",
+        "hora": "08:40",
+        "valor": 27.2
+    },
+    {
+        "id": "REG-010",
+        "sensorId": "SEN-010",
+        "fecha": "2026-09-22",
+        "hora": "08:45",
+        "valor": 920
+    },
+    {
+        "id": "REG-011",
+        "sensorId": "SEN-011",
+        "fecha": "2026-09-22",
+        "hora": "08:50",
+        "valor": 76
+    },
+    {
+        "id": "REG-012",
+        "sensorId": "SEN-011",
+        "fecha": "2026-09-23",
+        "hora": "08:50",
+        "valor": 78
+    },
+    {
+        "id": "REG-013",
+        "sensorId": "SEN-001",
+        "fecha": "2026-09-23",
+        "hora": "08:00",
+        "valor": 26.1
+    },
+    {
+        "id": "REG-014",
+        "sensorId": "SEN-002",
+        "fecha": "2026-09-23",
+        "hora": "08:05",
+        "valor": 72
+    },
+    {
+        "id": "REG-015",
+        "sensorId": "SEN-003",
+        "fecha": "2026-09-23",
+        "hora": "08:10",
+        "valor": 740
+    },
+    {
+        "id": "REG-016",
+        "sensorId": "SEN-004",
+        "fecha": "2026-09-23",
+        "hora": "08:15",
+        "valor": 24.2
+    },
+    {
+        "id": "REG-017",
+        "sensorId": "SEN-005",
+        "fecha": "2026-09-23",
+        "hora": "08:20",
+        "valor": 70
+    },
+    {
+        "id": "REG-018",
+        "sensorId": "SEN-006",
+        "fecha": "2026-09-23",
+        "hora": "08:25",
+        "valor": 845
+    }
+]

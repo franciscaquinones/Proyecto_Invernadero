@@ -66,29 +66,65 @@
 
         <section>
 
-            <h2>Buscar Cultivo:</h2>
+            <h2>Buscar y Filtrar Cultivos:</h2>
 
-            <form>
+            <form id="Formulario_Filtros">
 
-                <label for="Busqueda">Nombre del cultivo: </label>
-                <input type="text" id="Busqueda" name="Busqueda" placeholder="Ej: Lechuga">
-                <br>
+                <div class="Campos_Filtro">
 
-                <label for="Fase">Fase: </label>
-                <select id="Fase" name="Fase">
-                    <option value="Todos">Todas</option>
-                    <option value="Activo">Activo</option>
-                    <option value="Desarrollo">En Desarrollo</option>
-                    <option value="Experimental">Experimental</option>
-                    <option value="Finalizado">Finalizado</option>
-                </select>
+                    <div class="Campo_Filtro">
+                        <label for="Busqueda">Nombre:</label>
+                        <input type="text" id="Busqueda" placeholder="Ej: Uroboros">
+                    </div>
 
-                <button type="button" id="Boton_De_Filtro">Filtrar</button>
-                <br>
+                    <div class="Campo_Filtro">
+                        <label for="Fase">Estado:</label>
+                        <select id="Fase">
+                            <option value="Todos">Todos</option>
+                            <option value="Activo">Activo</option>
+                            <option value="En Desarrollo">En Desarrollo</option>
+                            <option value="Experimental">Experimental</option>
+                            <option value="Finalizado">Finalizado</option>
+                        </select>
+                    </div>
 
-                <button type="button" id="Boton_De_Agregar">Para agregar un cultivo, haz clic aquí</button>
+                    <div class="Campo_Filtro">
+                        <label for="Tipo">Tipo:</label>
+                        <select id="Tipo">
+                            <option value="Todos">Todos</option>
+                            <option value="Virus">Virus</option>
+                            <option value="Biológico">Biológico</option>
+                            <option value="Parásito">Parásito</option>
+                            <option value="Hongo">Hongo</option>
+                        </select>
+                    </div>
+
+                    <div class="Campo_Filtro">
+                        <label for="Orden">Ordenar:</label>
+                        <select id="Orden">
+                            <option value="Original">Orden original</option>
+                            <option value="Nombre_ASC">Nombre A-Z</option>
+                            <option value="Nombre_DESC">Nombre Z-A</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="Acciones_Filtro">
+                    <button type="button" id="Boton_De_Filtro">
+                        Aplicar filtros
+                        </button>
+
+                    <button type="reset" id="Boton_De_Limpiar_Filtros">
+                        Limpiar filtros
+                    </button>
+                </div>
 
             </form>
+
+            <button type="button" id="Boton_De_Agregar">
+                Agregar nuevo cultivo
+            </button>
 
         </section>
 
