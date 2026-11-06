@@ -66,28 +66,16 @@
 
         <section>
 
-            <h2>Buscar y Filtrar Cultivos:</h2>
-
-            <form id="Formulario_Filtros">
-
-                <div class="Campos_Filtro">
-
+            <h2>Buscar por nombre:</h2>
                     <div class="Campo_Filtro">
-                        <label for="Busqueda">Nombre:</label>
+                        <label for="Busqueda">Nombre del cultivo:</label>
                         <input type="text" id="Busqueda" placeholder="Ej: Uroboros">
                     </div>
-
-                    <div class="Campo_Filtro">
-                        <label for="Fase">Estado:</label>
-                        <select id="Fase">
-                            <option value="Todos">Todos</option>
-                            <option value="Activo">Activo</option>
-                            <option value="En Desarrollo">En Desarrollo</option>
-                            <option value="Experimental">Experimental</option>
-                            <option value="Finalizado">Finalizado</option>
-                        </select>
-                    </div>
-
+        </section>
+        <section>
+            <h2>Filtrar cultivos:</h2>
+            <form id="Formulario_Filtros">
+                <div class="Campo_Filtro">
                     <div class="Campo_Filtro">
                         <label for="Tipo">Tipo:</label>
                         <select id="Tipo">
@@ -98,34 +86,36 @@
                             <option value="Hongo">Hongo</option>
                         </select>
                     </div>
-
+                    <div class="Campo_Filtro">
+                        <label for="Fase">Estado:</label>
+                        <select id="Fase">
+                            <option value="Todos">Todos</option>
+                            <option value="Activo">Activo</option>
+                            <option value="En Desarrollo">En desarrollo</option>
+                            <option value="Experimental">Experimental</option>
+                            <option value="Finalizado">Finalizado</option>
+                        </select>
+                    </div>
                     <div class="Campo_Filtro">
                         <label for="Orden">Ordenar:</label>
                         <select id="Orden">
-                            <option value="Original">Orden original</option>
-                            <option value="Nombre_ASC">Nombre A-Z</option>
-                            <option value="Nombre_DESC">Nombre Z-A</option>
+                            <option value="Nombre_Asc">Nombre A-Z</option>
+                            <option value="Nombre_Des">Nombre Z-A </option>
                         </select>
                     </div>
-
                 </div>
-
                 <div class="Acciones_Filtro">
-                    <button type="button" id="Boton_De_Filtro">
+                    <button type="button" id="Boton_Filtro">
                         Aplicar filtros
-                        </button>
-
-                    <button type="reset" id="Boton_De_Limpiar_Filtros">
+                    </button>
+                    <button type="Reset" id="Boton_Limpiar">
                         Limpiar filtros
                     </button>
                 </div>
-
             </form>
-
-            <button type="button" id="Boton_De_Agregar">
+            <button type="button" id="Boton_Agregar">
                 Agregar nuevo cultivo
             </button>
-
         </section>
 
         <section id="Cultivos">
