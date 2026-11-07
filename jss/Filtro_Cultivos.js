@@ -4,7 +4,7 @@ const ListaDeCultivos = document.getElementById("LISTA_DE_CULTIVOS");
 const BotonDeFiltro = document.getElementById("Boton_De_Filtro");
 const BotonDeLimpiarFiltros = document.getElementById("Boton_De_Limpiar_Filtros");
 const FormularioFiltros = document.getElementById("Formulario_Filtros");
-const CampoBusqueda = document.getElementById("Búsqueda");
+const CampoBusqueda = document.getElementById("Busqueda");
 
 if (ListaDeCultivos && BotonDeFiltro && FormularioFiltros && CampoBusqueda) {
     // Permite comparar textos sin importar tildes o mayusculas.
@@ -103,6 +103,7 @@ if (ListaDeCultivos && BotonDeFiltro && FormularioFiltros && CampoBusqueda) {
             E.preventDefault();
 
             FormularioFiltros.reset();
+            CampoBusqueda.value = "";
             AplicarFiltros();
 
         });
