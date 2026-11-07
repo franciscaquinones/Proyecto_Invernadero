@@ -4,13 +4,9 @@ const ListaDeCultivos = document.getElementById("LISTA_DE_CULTIVOS");
 const BotonDeFiltro = document.getElementById("Boton_De_Filtro");
 const BotonDeLimpiarFiltros = document.getElementById("Boton_De_Limpiar_Filtros");
 const FormularioFiltros = document.getElementById("Formulario_Filtros");
+const CampoBusqueda = document.getElementById("Busqueda");
 
-if (ListaDeCultivos && BotonDeFiltro && FormularioFiltros) {
-
-    // Guarda el orden original de cada fila.
-    const OrdenOriginal = new WeakMap();
-    let SiguienteIndice = 0;
-
+if (ListaDeCultivos && BotonDeFiltro && FormularioFiltros && CampoBusqueda) {
     // Permite comparar textos sin importar tildes o mayusculas.
     function NormalizarTexto(Texto) {
         return Texto.normalize("NFD")
@@ -22,7 +18,7 @@ if (ListaDeCultivos && BotonDeFiltro && FormularioFiltros) {
     function AplicarFiltros() {
 
         const Busqueda = NormalizarTexto(
-            document.getElementById("Busqueda").value
+            CampoBusqueda.value
         );
 
         const Fase = document.getElementById("Fase").value;
@@ -34,36 +30,25 @@ if (ListaDeCultivos && BotonDeFiltro && FormularioFiltros) {
         const Filas = Array.from(
             ListaDeCultivos.querySelectorAll("tr")
         );
-
-        // Recordamos la posicion original de cada cultivo.
-        Filas.forEach(function (Fila) {
-
-            if (!OrdenOriginal.has(Fila)) {
-                OrdenOriginal.set(Fila, SiguienteIndice++);
-            }
-
-        });
-
         // ORDENAMIENTO
         Filas.sort(function (FilaA, FilaB) {
 
             const NombreA = FilaA.cells[0].textContent.trim();
             const NombreB = FilaB.cells[0].textContent.trim();
 
-            if (Orden === "Nombre_ASC") {
+            if (Orden === "Nombre_Asc") {
                 return NombreA.localeCompare(NombreB, "es", {
                     sensitivity: "base"
                 });
             }
 
-            if (Orden === "Nombre_DESC") {
+            if (Orden === "Nombre_Des") {
                 return NombreB.localeCompare(NombreA, "es", {
                     sensitivity: "base"
                 });
             }
 
-            return OrdenOriginal.get(FilaA) -
-                   OrdenOriginal.get(FilaB);
+            return 0;
 
         });
 
@@ -96,11 +81,11 @@ if (ListaDeCultivos && BotonDeFiltro && FormularioFiltros) {
             }
 
             ListaDeCultivos.appendChild(Fila);
-
         });
 
     }
-
+    //Implementamos la búsqueda dinámica 
+    CampoBusqueda.addEventListener("input", AplicarFiltros);
     // BOTON APLICAR FILTROS
     BotonDeFiltro.addEventListener("click", AplicarFiltros);
 
@@ -118,6 +103,7 @@ if (ListaDeCultivos && BotonDeFiltro && FormularioFiltros) {
             E.preventDefault();
 
             FormularioFiltros.reset();
+            CampoBusqueda.value = "";
             AplicarFiltros();
 
         });
