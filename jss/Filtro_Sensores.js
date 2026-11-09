@@ -61,7 +61,7 @@ if (ListaDeSensores && BotonDeFiltroSensor && FormularioFiltrosSensores && Boton
         AplicarFiltrosSensores();
     });
      document.getElementById("Orden").addEventListener("change", AplicarFiltrosSensores);//para que funcione el orden A-Z o Z-A
-
+     CampoBusqueda.addEventListener("input", AplicarFiltrosSensores); //para que funcione la busqueda dinánica 
     BotonDeLimpiarFiltrosSensores.addEventListener("click", function () {
         FormularioFiltrosSensores.reset();
         AplicarFiltrosSensores();
