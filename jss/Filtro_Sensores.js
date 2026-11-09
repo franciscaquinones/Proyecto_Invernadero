@@ -3,21 +3,35 @@ const ListaDeSensores = document.getElementById("LISTA_DE_SENSORES");
 const BotonDeFiltroSensor = document.getElementById("Boton_De_Filtro_Sensor");
 const FormularioFiltrosSensores = document.getElementById("Formulario_Filtros_Sensores");
 const BotonDeLimpiarFiltrosSensores = document.getElementById("Boton_De_Limpiar_Filtros_Sensores");
-
-if (ListaDeSensores && BotonDeFiltroSensor && FormularioFiltrosSensores && BotonDeLimpiarFiltrosSensores) {
-
+const CampoBusqueda = document.getElementById("Busqueda");
+if (ListaDeSensores && BotonDeFiltroSensor && FormularioFiltrosSensores && BotonDeLimpiarFiltrosSensores && CampoBusqueda) {
+// Permite comparar textos sin importar tildes o mayusculas.
+      function NormalizarTexto(Texto) {
+        return Texto.normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()
+            .trim();
+    }
     function AplicarFiltrosSensores() {
-
-        const Busqueda = document.getElementById("Busqueda").value.trim().toLowerCase();
+        const Busqueda = NormalizarTexto(document.getElementById("Busqueda").value);
         const Tipo = document.getElementById("Tipo").value;
         const Ubicacion = document.getElementById("Ubicacion").value;
         const Estado = document.getElementById("Estado").value;
-
-        const Filas = ListaDeSensores.querySelectorAll("tr");
-
+        const Orden = document.getElementById("Orden").value;
+        const Filas = Array.from(ListaDeSensores.querySelectorAll("tr"));//con las filas ahora hacemos un arreglo para ordenar
+        Filas.sort(function(Fila1,Fila2){
+            const Nombre1 = NormalizarTexto(Fila1.cells[0].textContent);
+            const Nombre2 = NormalizarTexto(Fila2.cells[0].textContent);
+            if(Orden==="Nombre_Asc"){
+                return Nombre1.localCompare(Nombre2);
+            }
+            if(Orden==="Nombre_Des"){
+                return Nombre2.localCompare(Nombre1);
+            }
+        })
         Filas.forEach(function (Fila) {
 
-            const NombreSensor = Fila.cells[0].textContent.trim().toLowerCase();
+            const NombreSensor = NormalizarTexto(Fila.cells[0].textContent);//la busqueda elimina tildes y mayus 
             const TipoSensor = Fila.cells[1].textContent.trim();
             const UbicacionSensor = Fila.cells[2].textContent.trim();
             const EstadoSensor = Fila.cells[3].textContent.trim();
@@ -36,6 +50,7 @@ if (ListaDeSensores && BotonDeFiltroSensor && FormularioFiltrosSensores && Boton
             else {
                 Fila.style.display = "none";
             }
+            ListaDeSensores.appendChild(Fila);//vuelve a poner las filas en el orden dado
 
         });
 
@@ -44,6 +59,7 @@ if (ListaDeSensores && BotonDeFiltroSensor && FormularioFiltrosSensores && Boton
     FormularioFiltrosSensores.addEventListener("submit", function (E) {
         E.preventDefault();
         AplicarFiltrosSensores();
+        document.getElementById("Orden").addEventListener("change", AplicarFiltrosSensores);//para que funcione el orden A-Z o Z-A
     });
 
     BotonDeLimpiarFiltrosSensores.addEventListener("click", function () {
