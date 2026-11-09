@@ -1,0 +1,269 @@
+.Expediente {
+    padding: 30px;
+    background-color: #0e0f13;
+    border: 1px solid #23262c;
+    border-radius: 16px;
+}
+
+.Cabecera_Perfil h2 {
+    margin: 0 0 8px;
+    color: #eeeeee;
+    font-size: 32px;
+}
+
+.Cabecera_Perfil p {
+    margin: 0;
+    color: #a9a9b0;
+    font-size: 15px;
+}
+
+.Insignias_Perfil {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.Insignia_Estado,
+.Insignia_Rol {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.Insignia_Estado {
+    background-color: #102d20;
+    color: #62df98;
+}
+
+.Insignia_Rol {
+    background-color: #272930;
+    color: #eeeeee;
+}
+
+.Seccion_Perfil {
+    margin-top: 28px;
+    padding-top: 28px;
+    border-top: 1px solid #34363e;
+}
+
+.Seccion_Perfil h3 {
+    margin: 0 0 20px;
+    color: #f87171;
+    font-size: 21px;
+}
+
+.Datos_Perfil {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    margin: 0;
+}
+
+.Dato_Perfil {
+    min-width: 0;
+}
+
+.Dato_Perfil dt {
+    margin-bottom: 8px;
+    color: #a9a9b0;
+    font-size: 14px;
+}
+
+.Dato_Perfil dd {
+    margin: 0;
+    color: #eeeeee;
+    font-size: 17px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.Tarjeta_Instalacion {
+    padding: 22px;
+    background-color: #16181e;
+    border: 1px solid #23262c;
+    border-radius: 12px;
+}
+
+.Tarjeta_Instalacion h4 {
+    margin: 0 0 12px;
+    color: #eeeeee;
+    font-size: 20px;
+}
+
+.Tarjeta_Instalacion p {
+    margin: 0;
+    color: #a9a9b0;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.Estado_Instalacion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+    color: #a9a9b0;
+    font-size: 15px;
+}
+
+.Acciones_Perfil {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.Acciones_Perfil button,
+.Acciones_Perfil a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-height: 44px;
+    padding: 12px 18px;
+    border: 1px solid #50545e;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+#Boton_Editar_Perfil {
+    background-color: #7a2020;
+    border-color: #963232;
+    color: white;
+}
+
+#Boton_Editar_Perfil:hover:not(:disabled) {
+    background-color: #a83232;
+}
+
+#Boton_Editar_Perfil:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+#Boton_Cerrar_Sesion_Perfil {
+    background-color: transparent;
+    color: #eeeeee;
+}
+
+#Boton_Cerrar_Sesion_Perfil:hover {
+    background-color: #272930;
+    border-color: #a9a9b0;
+}
+
+.Acciones_Perfil button:focus-visible,
+.Acciones_Perfil a:focus-visible {
+    outline: 2px solid #f87171;
+    outline-offset: 3px;
+}
+
+[x-cloak] {
+    display: none !important;
+}
+
+#Boton_Cancelar_Perfil {
+    background-color: #272930;
+    color: #eeeeee;
+}
+
+#Boton_Cancelar_Perfil:hover {
+    background-color: #343840;
+}
+
+.Campo_Perfil {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.Campo_Perfil label {
+    color: #a9a9b0;
+    font-size: 14px;
+}
+
+.Campo_Perfil input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    background-color: #111217;
+    color: #eeeeee;
+    border: 1px solid #50545e;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 16px;
+}
+
+.Campo_Perfil input:focus {
+    border-color: #f87171;
+    outline: 2px solid #f87171;
+    outline-offset: 2px;
+}
+
+.Error_Perfil {
+    margin: 0;
+    color: #fca5a5;
+    font-size: 14px;
+}
+
+.Exito_Perfil {
+    margin: 20px 0 0;
+    color: #62df98;
+    line-height: 1.5;
+}
+
+#Boton_Guardar_Perfil {
+    background-color: #7a2020;
+    border-color: #963232;
+    color: white;
+}
+
+#Boton_Guardar_Perfil:hover {
+    background-color: #a83232;
+}
+
+@media (max-width: 600px) {
+
+    .Expediente {
+        padding: 20px;
+    }
+
+    .Cabecera_Perfil h2 {
+        font-size: 26px;
+    }
+
+    .Datos_Perfil {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .Seccion_Perfil {
+        margin-top: 24px;
+        padding-top: 24px;
+    }
+
+    .Tarjeta_Instalacion {
+        padding: 18px;
+    }
+
+    .Acciones_Perfil {
+        flex-direction: column;
+    }
+
+    .Acciones_Perfil button,
+    .Acciones_Perfil a {
+        width: 100%;
+    }
+
+}

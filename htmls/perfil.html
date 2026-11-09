@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="../imgs/Logo_Pub.png">
+    <link rel="stylesheet" href="../csss/Estilo_Interno.css">
+    <link rel="stylesheet" href="../csss/Perfil.css">
+    <script type="module" src="../jss/Perfil.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        Mi Perfil - Umbrella Corps Botanics
+    </title>
+    <!-- Autores: Francisca Quiñones y Oscar Oviedo -->
+    <!-- Proyecto Arklay Botanics -->
+</head>
+<body>
+
+    <header>
+
+        <div id="Logo">
+            <img src="../imgs/Logo_Pub.png" id="Logo_Pub" />
+            <h1>
+                Umbrella Corps Botanics
+            </h1>
+        </div>
+
+        <table>
+            <tr>
+                <td>
+                    <a href="perfil.html" aria-current="page" id="Activo">
+                        Usuario
+                    </a>
+                </td>
+                <td>
+                    <a href="login.html">
+                        Cerrar Sesión
+                    </a>
+                </td>
+            </tr>
+        </table>
+
+    </header>
+
+    <nav>
+
+        <a href="dashboard.html">
+            Inicio
+        </a>
+        <a href="cultivos.html">
+            Cultivos
+        </a>
+        <a href="sensores.html">
+            Sensores
+        </a>
+        <a href="historial.html">
+            Historial
+        </a>
+
+    </nav>
+
+    <main>
+
+        <article class="Expediente" x-data="perfilUsuario">
+
+            <div class="Cabecera_Perfil">
+                <h2 x-text="usuario.nombre + ' ' + usuario.apellido"></h2>
+                <p>
+                    Expediente de personal ·
+                    <span x-text="usuario.id"></span>
+                </p>
+
+                <div class="Insignias_Perfil">
+                    <span class="Insignia_Estado" x-text="usuario.estado"></span>
+                    <span class="Insignia_Rol" x-text="usuario.rol === 'administrador' ? 'Administrador' : 'Usuario'"></span>
+                </div>
+            </div>
+
+            <section class="Seccion_Perfil">
+                <h3>Información personal</h3>
+                <dl class="Datos_Perfil" x-show="!editando">
+
+                    <div class="Dato_Perfil">
+                        <dt>Nombre</dt>
+                        <dd x-text="usuario.nombre"></dd>
+                    </div>
+
+                    <div class="Dato_Perfil">
+                        <dt>Apellido</dt>
+                        <dd x-text="usuario.apellido"></dd>
+                    </div>
+
+                    <div class="Dato_Perfil">
+                        <dt>Correo electrónico</dt>
+                        <dd x-text="usuario.correo"></dd>
+                    </div>
+
+                    <div class="Dato_Perfil">
+                        <dt>Identificador</dt>
+                        <dd x-text="usuario.id"></dd>
+                    </div>
+
+                </dl>
+
+                <form id="Formulario_Perfil" x-show="editando" x-cloak @submit.prevent="guardarPerfil()" novalidate>
+
+                    <div class="Datos_Perfil">
+
+                        <div class="Campo_Perfil">
+                            <label for="Nombre_Perfil">Nombre:</label>
+                            <input type="text" id="Nombre_Perfil" name="nombre" autocomplete="given-name" x-model="formulario.nombre" required>
+
+                            <p class="Error_Perfil" x-show="errores.nombre" x-text="errores.nombre" role="alert"></p>
+                        </div>
+
+                        <div class="Campo_Perfil">
+                            <label for="Apellido_Perfil">Apellido:</label>
+                            <input type="text" id="Apellido_Perfil" name="apellido"
+                                autocomplete="family-name" x-model="formulario.apellido" required>
+
+                            <p class="Error_Perfil" x-show="errores.apellido" x-text="errores.apellido" role="alert"></p>
+                        </div>
+
+                        <div class="Campo_Perfil">
+                            <label for="Correo_Perfil">Correo electrónico:</label>
+                            <input type="email" id="Correo_Perfil" name="correo" autocomplete="email" x-model="formulario.correo" required>
+
+                            <p class="Error_Perfil" x-show="errores.correo" x-text="errores.correo" role="alert"></p>
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+            <section class="Seccion_Perfil">
+                <h3>Instalación asignada</h3>
+                <div class="Tarjeta_Instalacion">
+
+                    <h4 x-text="instalacion.nombre"></h4>
+
+                    <p x-text="instalacion.id + ' · ' + instalacion.ubicacion"></p>
+
+                    <div class="Estado_Instalacion">
+                        <span>Estado de instalación</span>
+                        <span class="Insignia_Estado" x-text="instalacion.estado"></span>
+                    </div>
+
+                </div>
+            </section>
+
+            <p class="Exito_Perfil" x-show="mensajeExito" x-text="mensajeExito" x-cloak role="status"></p>
+
+            <div class="Acciones_Perfil">
+
+                <button type="button" id="Boton_Editar_Perfil" x-show="!editando" @click="iniciarEdicion()">
+                    Editar perfil
+                </button>
+
+                <button type="submit" id="Boton_Guardar_Perfil" form="Formulario_Perfil" x-show="editando" x-cloak>
+                    Guardar cambios
+                </button>
+
+                <button type="button" id="Boton_Cancelar_Perfil" x-show="editando" x-cloak @click="cancelarEdicion()">
+                    Cancelar edición
+                </button>
+
+                <a href="login.html" id="Boton_Cerrar_Sesion_Perfil">
+                    Cerrar sesión
+                </a>
+
+            </div>
+
+        </article>
+
+    </main>
+
+
+
+    <hr>
+    <footer>
+
+        <h3>
+            Autores: Oscar Oviedo y Francisca Quiñones
+            <br>
+            Contacto: contacto@arklaybotanics.com
+            <br>
+            Página Oficial: www.stellawings.com
+            <br>
+            Todos los derechos reservados ©
+        </h3>
+
+    </footer>
+
+</body>
+
+</html>
