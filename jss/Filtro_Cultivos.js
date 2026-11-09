@@ -86,6 +86,8 @@ if (ListaDeCultivos && BotonDeFiltro && FormularioFiltros && CampoBusqueda) {
     }
     //Implementamos la búsqueda dinámica 
     CampoBusqueda.addEventListener("input", AplicarFiltros);
+    //orden dinamico, no hay que apretar el boton para que se ordene alfabeticamente 
+    document.getElementById("Orden").addEventListener("change", AplicarFiltros);
     // BOTON APLICAR FILTROS
     BotonDeFiltro.addEventListener("click", AplicarFiltros);
 
