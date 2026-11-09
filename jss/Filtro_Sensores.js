@@ -59,8 +59,8 @@ if (ListaDeSensores && BotonDeFiltroSensor && FormularioFiltrosSensores && Boton
     FormularioFiltrosSensores.addEventListener("submit", function (E) {
         E.preventDefault();
         AplicarFiltrosSensores();
-        document.getElementById("Orden").addEventListener("change", AplicarFiltrosSensores);//para que funcione el orden A-Z o Z-A
     });
+     document.getElementById("Orden").addEventListener("change", AplicarFiltrosSensores);//para que funcione el orden A-Z o Z-A
 
     BotonDeLimpiarFiltrosSensores.addEventListener("click", function () {
         FormularioFiltrosSensores.reset();
