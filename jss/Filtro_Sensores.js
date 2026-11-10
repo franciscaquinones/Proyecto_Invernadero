@@ -23,10 +23,10 @@ if (ListaDeSensores && BotonDeFiltroSensor && FormularioFiltrosSensores && Boton
             const Nombre1 = NormalizarTexto(Fila1.cells[0].textContent);
             const Nombre2 = NormalizarTexto(Fila2.cells[0].textContent);
             if(Orden==="Nombre_Asc"){
-                return Nombre1.localeCompare(Nombre2);
+                return Nombre1.localeCompare(Nombre2,"es", {sensitivity: "base" });
             }
             if(Orden==="Nombre_Des"){
-                return Nombre2.localeCompare(Nombre1);
+                return Nombre2.localeCompare(Nombre1, "es",{sensitivity:"base"});
             }
         })
         Filas.forEach(function (Fila) {
