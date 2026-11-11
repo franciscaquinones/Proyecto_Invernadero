@@ -99,3 +99,64 @@ function nuevoId(Lista, Prefijo) {
     });
     return Prefijo + String(Numero).padStart(3, "0");
 } // Devuelve un nuevo id con su prefijo y numero correspondiente (al revisar la lista)
+
+function filtrar(Lista, Opciones, Campos) {
+    const Busqueda = normalizar(Opciones.busqueda || "");
+    const Resultado = Lista.filter(function (Item) {
+        if (!normalizar(Item.nombre).includes(Busqueda)) {
+            return false;
+        }
+        for (const Campo of Campos) {
+            const Valor = Opciones[Campo];
+            if (Valor && normalizar(Valor) !== "todos" && normalizar(Item[Campo]) !== normalizar(Valor)) {
+                return false;
+            }
+        }
+        return true;
+    });
+    const Orden = Opciones.orden || "Original";
+    if (!["Original", "Nombre_ASC", "Nombre_DESC"].includes(Orden)) {
+        fallar(422, "Selecciona un orden válido: Original, Nombre_ASC o Nombre_DESC.");
+    }
+    if (Orden !== "Original") {
+        Resultado.sort(function (A, B) {
+            return A.nombre.localeCompare(B.nombre, "es", { sensitivity: "base", numeric: true }) * (Orden === "Nombre_DESC" ? -1 : 1);
+        });
+    }
+    return Resultado;
+}
+
+function validarPersona(Base, Datos, Id = null) {
+    objeto(Datos);
+    const Persona = {
+        nombre: texto(Datos.nombre, "Nombre", 80),
+        apellido: texto(Datos.apellido, "Apellido", 80),
+        correo: correo(Datos.correo)
+    };
+    if (Base.usuarios.some(function (U) { return U.id !== Id && U.correo.toLowerCase() === Persona.correo; })) {
+        fallar(409, "El correo ya está registrado por otra cuenta.");
+    }
+    return Persona;
+}
+
+function validarRecurso(Recurso, Datos) {
+    const Comun = { nombre: texto(Datos.nombre, "Nombre") };
+    if (Recurso === "cultivos") {
+        const Nivel = numero(Datos.nivelCuarentena, "Nivel de cuarentena");
+        if (!Number.isInteger(Nivel) || Nivel < 0 || Nivel > 10) {
+            fallar(422, "El nivel de cuarentena debe ser un entero entre 0 y 10.");
+        }
+        return {
+            ...Comun,
+            tipo: opcion(Datos.tipo, TIPOS_CULTIVO, "Tipo"),
+            estado: opcion(Datos.estado, ESTADOS_CULTIVO, "Estado"),
+            nivelCuarentena: Nivel, fechaIncubacion: fecha(Datos.fechaIncubacion)
+        };
+    }
+    const Tipo = opcion(Datos.tipo, Object.keys(UNIDADES), "Tipo");
+    return {
+        ...Comun, tipo: Tipo, unidad: UNIDADES[Tipo],
+        estado: opcion(Datos.estado, ESTADOS_SENSOR, "Estado"),
+        ubicacion: opcion(Datos.ubicacion, SECTORES, "Ubicación")
+    };
+}
