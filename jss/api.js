@@ -282,3 +282,403 @@ async function ejecutar(Opciones, Operacion, Escritura = false, Status = 200) {
     return Turno;
     // [IA] fin
 }
+
+/* SESIÓN Y PERMISOS INTERNOS */
+
+function sesion(Base) {
+    const Usuario = Base.usuarios.find(function (U) { return U.id === Base.sesion; });
+    if (!Usuario) {
+        fallar(401, "Debes iniciar sesión para continuar.");
+    }
+    if (Usuario.estado !== "Activo") {
+        fallar(403, "Esta cuenta está inactiva.");
+    }
+    return Usuario;
+}
+
+function administrador(Base) {
+    const Usuario = sesion(Base);
+    if (Usuario.rol !== "administrador") {
+        fallar(403, "Esta operación requiere permisos de administrador.");
+    }
+    return Usuario;
+}
+
+function accesoInvernadero(Base, Id) {
+    const Usuario = sesion(Base);
+    const Invernadero = buscar(Base.invernaderos, Id);
+    if (Usuario.rol !== "administrador" && Invernadero.usuarioId !== Usuario.id) {
+        fallar(403, "No puedes acceder a recursos de otro usuario.");
+    }
+    return Invernadero;
+}
+
+function propios(Base, Recurso, Opciones = {}) {
+    const Usuario = sesion(Base);
+    if (Opciones.invernaderoId) {
+        accesoInvernadero(Base, Opciones.invernaderoId);
+    }
+    const Permitidos = [];
+    for (const Invernadero of Base.invernaderos) {
+        if (Usuario.rol === "administrador" || Invernadero.usuarioId === Usuario.id) {
+            Permitidos.push(Invernadero.id);
+        }
+    }
+    return Base[Recurso].filter(function (Item) {
+        if (Opciones.invernaderoId && Item.invernaderoId !== Opciones.invernaderoId) {
+            return false;
+        }
+        return Permitidos.includes(Item.invernaderoId);
+    });
+}
+
+function destino(Base, Datos) {
+    const Usuario = sesion(Base);
+    const Id = Datos.invernaderoId || Base.invernaderos.find(function (I) { return I.usuarioId === Usuario.id; })?.id;
+    if (!Id) {
+        fallar(422, "Indica el invernadero al que pertenece el recurso.");
+    }
+    return accesoInvernadero(Base, Id).id;
+}
+
+/* SESIÓN Y PERFIL */
+
+export async function registrarUsuario(Datos, Opciones = {}) {
+    return ejecutar(Opciones, function (Base) {
+        const Persona = validarPersona(Base, Datos);
+        if (typeof Datos.contrasena !== "string" || Datos.contrasena.trim().length < 6 || Datos.contrasena.length > 128) {
+            fallar(422, "La contraseña debe tener entre 6 y 128 caracteres y no contener solo espacios.");
+        }
+        if (Datos.contrasena !== Datos.confirmarContrasena) {
+            fallar(422, "Las contraseñas no coinciden.");
+        }
+        const Usuario = {
+            id: nuevoId(Base.usuarios, "User_"), ...Persona,
+            contrasena: Datos.contrasena, rol: "usuario", estado: "Activo"
+        };
+        const Invernadero = {
+            id: nuevoId(Base.invernaderos, "INV-"),
+            nombre: texto(Datos.nombreInvernadero ?? "Invernadero de " + Persona.nombre, "Nombre del invernadero"),
+            ubicacion: texto(Datos.ubicacion ?? "Por definir", "Ubicación"),
+            estado: "Operativo", usuarioId: Usuario.id
+        };
+        Base.usuarios.push(Usuario);
+        Base.invernaderos.push(Invernadero);
+        return { usuario: publico(Usuario), invernadero: Invernadero };
+    }, true, 201);
+}
+
+export async function iniciarSesion(Datos, Opciones = {}) {
+    return ejecutar(Opciones, function (Base) {
+        objeto(Datos);
+        const Correo = correo(Datos.correo);
+        const Usuario = Base.usuarios.find(function (U) {
+            return U.correo.toLowerCase() === Correo && U.contrasena === Datos.contrasena;
+        });
+        if (!Usuario) {
+            fallar(401, "Correo o contraseña incorrectos.");
+        }
+        if (Usuario.estado !== "Activo") {
+            fallar(403, "Esta cuenta está inactiva.");
+        }
+        Base.sesion = Usuario.id;
+        return publico(Usuario);
+    }, true);
+}
+
+export async function obtenerSesion(Opciones = {}) {
+    return ejecutar(Opciones, function (Base) { return publico(sesion(Base)); });
+}
+
+export async function cerrarSesion(Opciones = {}) {
+    return ejecutar(Opciones, function (Base) {
+        Base.sesion = null;
+        return null;
+    }, true);
+}
+
+export async function obtenerPerfil(Opciones = {}) {
+    return ejecutar(Opciones, function (Base) {
+        const Usuario = sesion(Base);
+        return {
+            usuario: publico(Usuario),
+            invernadero: Base.invernaderos.find(function (I) { return I.usuarioId === Usuario.id; }) || null
+        };
+    });
+}
+
+export async function actualizarPerfil(Datos, Opciones = {}) {
+    return ejecutar(Opciones, function (Base) {
+        const Usuario = sesion(Base);
+        objeto(Datos);
+        if (Object.keys(Datos).some(function (Campo) { return !["nombre", "apellido", "correo"].includes(Campo); })) {
+            fallar(403, "Desde el perfil solo puedes modificar nombre, apellido y correo.");
+        }
+        Object.assign(Usuario, validarPersona(Base, { ...Usuario, ...Datos }, Usuario.id));
+        return publico(Usuario);
+    }, true);
+}
+
+/* INVERNADEROS */
+
+export async function obtenerInvernadero(Id, Opciones = {}) {
+    return ejecutar(Opciones, function (Base) {
+        const Usuario = sesion(Base);
+        const InvernaderoId = Id || Base.invernaderos.find(function (I) { return I.usuarioId === Usuario.id; })?.id;
+        if (!InvernaderoId) {
+            fallar(404, "Esta cuenta no tiene un invernadero asignado.");
+        }
+        return accesoInvernadero(Base, InvernaderoId);
+    });
+}
+
+/* CULTIVOS Y SENSORES */
+
+function accesoRecurso(Base, Recurso, Id) {
+    sesion(Base);
+    const Elemento = buscar(Base[Recurso], Id);
+    accesoInvernadero(Base, Elemento.invernaderoId);
+    return Elemento;
+}
+
+function ultimaMedicion(Base, Sensor) {
+    const Registros = Base.registros.filter(function (R) { return R.sensorId === Sensor.id; });
+    Registros.sort(function (A, B) { return (B.fecha + B.hora).localeCompare(A.fecha + A.hora); });
+    return { ...Sensor, ultimaMedicion: Registros[0] || null };
+}
+
+function escribirRecurso(Recurso, Id, Datos, Opciones) {
+    return ejecutar(Opciones, function (Base) {
+        objeto(Datos);
+        // Sin Id creamos; con Id buscamos el cultivo o sensor que vamos a editar.
+        let Actual = null;
+        let InvernaderoId;
+        if (Id === null) {
+            InvernaderoId = destino(Base, Datos);
+        }
+        else {
+            Actual = accesoRecurso(Base, Recurso, Id);
+            InvernaderoId = Actual.invernaderoId;
+        }
+        if (Actual && ((Datos.id !== undefined && Datos.id !== Actual.id) ||
+            (Datos.invernaderoId !== undefined && Datos.invernaderoId !== InvernaderoId))) {
+            fallar(403, "No puedes cambiar el identificador ni trasladar el recurso a otra instalación.");
+        }
+        // Los datos nuevos reemplazan los campos enviados y conservan los demás.
+        const Campos = validarRecurso(Recurso, { ...Actual, ...Datos });
+        if (Recurso === "sensores") {
+            if (Base.sensores.some(function (S) { return S.id !== Id && S.invernaderoId === InvernaderoId && normalizar(S.nombre) === normalizar(Campos.nombre); })) {
+                fallar(409, "Ya existe un sensor con ese nombre en la instalación.");
+            }
+            if (Actual && Campos.tipo !== Actual.tipo && Base.registros.some(function (R) { return R.sensorId === Id; })) {
+                fallar(409, "No puedes cambiar el tipo de un sensor que tiene mediciones históricas.");
+            }
+        }
+        if (Actual) {
+            Object.assign(Actual, Campos);
+            return Actual;
+        }
+        const Nuevo = {
+            id: nuevoId(Base[Recurso], Recurso === "cultivos" ? "C-" : "SEN-"),
+            ...Campos, invernaderoId: InvernaderoId
+        };
+        Base[Recurso].push(Nuevo);
+        return Nuevo;
+    }, true, Id === null ? 201 : 200);
+}
+
+function borrarRecurso(Recurso, Id, Opciones) {
+    return ejecutar(Opciones, function (Base) {
+        accesoRecurso(Base, Recurso, Id);
+        Base[Recurso] = Base[Recurso].filter(function (Item) { return Item.id !== Id; });
+        if (Recurso === "sensores") {
+            Base.registros = Base.registros.filter(function (R) { return R.sensorId !== Id; });
+        }
+        return { id: Id };
+    }, true);
+}
+
+export async function obtenerCultivos(Opciones = {}) {
+    return ejecutar(Opciones, function (Base) {
+        return filtrar(propios(Base, "cultivos", Opciones), Opciones, ["tipo", "estado"]);
+    });
+}
+
+export async function obtenerCultivo(Id, Opciones = {}) {
+    return ejecutar(Opciones, function (Base) { return accesoRecurso(Base, "cultivos", Id); });
+}
+
+export async function crearCultivo(Datos, Opciones = {}) {
+    return escribirRecurso("cultivos", null, Datos, Opciones);
+}
+
+export async function editarCultivo(Id, Datos, Opciones = {}) {
+    return escribirRecurso("cultivos", Id ?? "", Datos, Opciones);
+}
+
+export async function eliminarCultivo(Id, Opciones = {}) {
+    return borrarRecurso("cultivos", Id, Opciones);
+}
+
+export async function obtenerSensores(Opciones = {}) {
+    return ejecutar(Opciones, function (Base) {
+        return filtrar(propios(Base, "sensores", Opciones), Opciones, ["tipo", "estado", "ubicacion"]).map(function (S) {
+            return ultimaMedicion(Base, S);
+        });
+    });
+}
+
+export async function crearSensor(Datos, Opciones = {}) {
+    return escribirRecurso("sensores", null, Datos, Opciones);
+}
+
+export async function editarSensor(Id, Datos, Opciones = {}) {
+    return escribirRecurso("sensores", Id ?? "", Datos, Opciones);
+}
+
+export async function eliminarSensor(Id, Opciones = {}) {
+    return borrarRecurso("sensores", Id, Opciones);
+}
+
+/* HISTORIAL Y DATOS PARA GRÁFICOS */
+
+function registrosFiltrados(Base, Opciones) {
+    const Sensores = propios(Base, "sensores", Opciones);
+    if (Opciones.sensorId) {
+        accesoRecurso(Base, "sensores", Opciones.sensorId);
+    }
+    const Desde = Opciones.desde ? fecha(Opciones.desde) : "";
+    const Hasta = Opciones.hasta ? fecha(Opciones.hasta) : "";
+    if (Desde && Hasta && Desde > Hasta) {
+        fallar(422, "La fecha inicial no puede ser posterior a la fecha final.");
+    }
+    const Filtrados = filtrar(Sensores, { tipo: Opciones.tipo, ubicacion: Opciones.ubicacion }, ["tipo", "ubicacion"]);
+    const Ids = Filtrados.map(function (S) { return S.id; });
+    const Orden = Opciones.orden || "Fecha_DESC";
+    if (!["Fecha_ASC", "Fecha_DESC"].includes(Orden)) {
+        fallar(422, "El orden del historial debe ser Fecha_ASC o Fecha_DESC.");
+    }
+    const Registros = Base.registros.filter(function (R) {
+        if (!Ids.includes(R.sensorId)) return false;
+        if (Opciones.sensorId && R.sensorId !== Opciones.sensorId) return false;
+        if (Desde && R.fecha < Desde) return false;
+        if (Hasta && R.fecha > Hasta) return false;
+        return true;
+    });
+    return Registros.sort(function (A, B) {
+        return (A.fecha + A.hora).localeCompare(B.fecha + B.hora) * (Orden === "Fecha_DESC" ? -1 : 1);
+    });
+}
+
+export async function obtenerRegistros(Opciones = {}) {
+    return ejecutar(Opciones, function (Base) { return registrosFiltrados(Base, Opciones); });
+}
+
+export async function obtenerDatosGrafico(SensorId, Opciones = {}) {
+    return ejecutar(Opciones, function (Base) {
+        const Sensor = accesoRecurso(Base, "sensores", SensorId);
+        const Registros = registrosFiltrados(Base, { ...Opciones, sensorId: SensorId, orden: "Fecha_ASC" });
+        return {
+            sensor: Sensor,
+            etiquetas: Registros.map(function (R) { return R.fecha + " " + R.hora; }),
+            valores: Registros.map(function (R) { return R.valor; }),
+            unidad: Sensor.unidad
+        };
+    });
+}
+
+function resumen(Base, Opciones) {
+    const Cultivos = propios(Base, "cultivos", Opciones);
+    const Sensores = propios(Base, "sensores", Opciones);
+    const Registros = registrosFiltrados(Base, Opciones);
+    const Promedios = {};
+    // Sumamos por separado: no mezclamos temperatura, humedad y luz.
+    for (const Tipo of Object.keys(UNIDADES)) {
+        let Total = 0;
+        let Cantidad = 0;
+        for (const Registro of Registros) {
+            const Sensor = Sensores.find(function (S) { return S.id === Registro.sensorId; });
+            if (Sensor.tipo === Tipo) {
+                Total += Registro.valor;
+                Cantidad++;
+            }
+        }
+        let Promedio = null;
+        if (Cantidad > 0) {
+            Promedio = Number((Total / Cantidad).toFixed(2));
+        }
+        Promedios[Tipo] = { valor: Promedio, unidad: UNIDADES[Tipo], cantidad: Cantidad };
+    }
+    return {
+        totalCultivos: Cultivos.length, totalSensores: Sensores.length, totalRegistros: Registros.length,
+        promedios: Promedios,
+        actividadReciente: [...Registros].sort(function (A, B) { return (B.fecha + B.hora).localeCompare(A.fecha + A.hora); }).slice(0, 5)
+    };
+}
+
+export async function obtenerResumen(Opciones = {}) {
+    return ejecutar(Opciones, function (Base) { return resumen(Base, Opciones); });
+}
+
+/* ADMINISTRACIÓN */
+
+export async function obtenerUsuarios(Opciones = {}) {
+    return ejecutar(Opciones, function (Base) {
+        administrador(Base);
+        const Busqueda = normalizar(Opciones.busqueda || "");
+        const Usuarios = Base.usuarios.filter(function (U) {
+            return normalizar(U.nombre + " " + U.apellido + " " + U.correo).includes(Busqueda);
+        });
+        return filtrar(Usuarios, { ...Opciones, busqueda: "" }, ["rol", "estado"]).map(publico);
+    });
+}
+
+export async function obtenerRecursosUsuario(Id, Opciones = {}) {
+    return ejecutar(Opciones, function (Base) {
+        administrador(Base);
+        const Usuario = buscar(Base.usuarios, Id);
+        const Invernadero = Base.invernaderos.find(function (I) { return I.usuarioId === Id; }) || null;
+        const Cultivos = Base.cultivos.filter(function (C) { return C.invernaderoId === Invernadero?.id; });
+        const Sensores = Base.sensores.filter(function (S) { return S.invernaderoId === Invernadero?.id; });
+        const Ids = Sensores.map(function (S) { return S.id; });
+        return {
+            usuario: publico(Usuario), invernadero: Invernadero, cultivos: Cultivos, sensores: Sensores,
+            registros: Base.registros.filter(function (R) { return Ids.includes(R.sensorId); })
+        };
+    });
+}
+
+export async function eliminarUsuario(Id, Opciones = {}) {
+    return ejecutar(Opciones, function (Base) {
+        const Administrador = administrador(Base);
+        buscar(Base.usuarios, Id);
+        if (Id === Administrador.id) {
+            fallar(409, "No puedes eliminar la cuenta con la que estás administrando.");
+        }
+        const Invernadero = Base.invernaderos.find(function (I) { return I.usuarioId === Id; });
+        if (Invernadero) {
+            const Sensores = Base.sensores.filter(function (S) { return S.invernaderoId === Invernadero.id; });
+            const Ids = Sensores.map(function (S) { return S.id; });
+            // Conservamos solamente los datos que no pertenecen a esta instalación.
+            Base.registros = Base.registros.filter(function (R) { return !Ids.includes(R.sensorId); });
+            Base.sensores = Base.sensores.filter(function (S) { return S.invernaderoId !== Invernadero.id; });
+            Base.cultivos = Base.cultivos.filter(function (C) { return C.invernaderoId !== Invernadero.id; });
+            Base.invernaderos = Base.invernaderos.filter(function (I) { return I.id !== Invernadero.id; });
+        }
+        Base.usuarios = Base.usuarios.filter(function (U) { return U.id !== Id; });
+        return { id: Id };
+    }, true);
+}
+
+export async function obtenerEstadisticasGlobales(Opciones = {}) {
+    return ejecutar(Opciones, function (Base) {
+        administrador(Base);
+        return {
+            totalUsuarios: Base.usuarios.length,
+            usuariosActivos: Base.usuarios.filter(function (U) { return U.estado === "Activo"; }).length,
+            totalInvernaderos: Base.invernaderos.length,
+            ...resumen(Base, Opciones)
+        };
+    });
+}
+
