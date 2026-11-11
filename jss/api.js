@@ -1,3 +1,4 @@
+const CLAVE_DATOS = "api_de_arklay"; // Nombre para identificar en localStorage
 const ARCHIVOS = {
     usuarios: "Usuarios.json",
     invernaderos: "Invernaderos.json",
@@ -159,4 +160,79 @@ function validarRecurso(Recurso, Datos) {
         estado: opcion(Datos.estado, ESTADOS_SENSOR, "Estado"),
         ubicacion: opcion(Datos.ubicacion, SECTORES, "Ubicación")
     };
+}
+
+function validarBase(Base) {
+    if (!Base || !(Base.sesion === null || typeof Base.sesion === "string")) {
+        fallar(500, "Los datos guardados no tienen un formato compatible. No se han sobrescrito.");
+    }
+    // [IA] inicio · ia/2026-11-11_oscaroviedo-png_validacion-carga-json.md
+    for (const Recurso of Object.keys(ARCHIVOS)) {
+        const Lista = Base[Recurso];
+        // [IA] fin
+        if (!Array.isArray(Lista)) {
+            fallar(500, "Falta una lista de datos. No se han sobrescrito.");
+        }
+        const Ids = [];
+        for (const Item of Lista) {
+            if (!Item || typeof Item.id !== "string" || Ids.includes(Item.id)) {
+                fallar(500, "Hay identificadores inválidos o repetidos. No se han sobrescrito.");
+            }
+            Ids.push(Item.id);
+        }
+    }
+    // Revisamos las relaciones antes de usar o guardar los datos
+    const Propietarios = [];
+    for (const Invernadero of Base.invernaderos) {
+        const Usuario = Base.usuarios.find(function (U) { return U.id === Invernadero.usuarioId; });
+        if (!Usuario || Propietarios.includes(Invernadero.usuarioId)) {
+            fallar(500, "Hay una instalación sin usuario o un usuario con instalaciones repetidas.");
+        }
+        Propietarios.push(Invernadero.usuarioId);
+    }
+    for (const Item of [...Base.cultivos, ...Base.sensores]) { // los deja como solo una lista para poder recorrerlo todo junto (...)
+        const Invernadero = Base.invernaderos.find(function (I) { return I.id === Item.invernaderoId; });
+        if (!Invernadero) {
+            fallar(500, "Hay un cultivo o sensor sin instalación.");
+        }
+    }
+    for (const Registro of Base.registros) {
+        const Sensor = Base.sensores.find(function (S) { return S.id === Registro.sensorId; });
+        if (!Sensor) {
+            fallar(500, "Hay una medición sin sensor.");
+        }
+    }
+    return Base;
+}
+
+async function cargarBase() {
+    // [IA] inicio · ia/2026-11-11_oscaroviedo-png_validacion-carga-json.md
+    const Guardado = localStorage.getItem(CLAVE_DATOS);
+    // [IA] fin
+    if (Guardado !== null) {
+        return validarBase(JSON.parse(Guardado));
+    }
+    const Base = { sesion: null };
+    // Solo se leen los JSON cuando todavía no hay una copia guardada
+    for (const Recurso of Object.keys(ARCHIVOS)) {
+        const Archivo = ARCHIVOS[Recurso];
+        // [IA] inicio · ia/2026-11-11_oscaroviedo-png_validacion-carga-json.md
+        let Respuesta;
+        try {
+            Respuesta = await fetch(new URL("../mocks/" + Archivo, import.meta.url));
+        }
+        // [IA] fin
+        catch {
+            fallar(503, "No se pudieron cargar los datos iniciales. Intenta nuevamente.");
+        }
+        if (!Respuesta.ok) {
+            fallar(503, "No se pudieron cargar los datos iniciales. Intenta nuevamente.");
+        }
+        Base[Recurso] = await Respuesta.json();
+    }
+    validarBase(Base);
+    // [IA] inicio · ia/2026-11-11_oscaroviedo-png_validacion-carga-json.md
+    localStorage.setItem(CLAVE_DATOS, JSON.stringify(Base));
+    // [IA] fin
+    return Base;
 }
