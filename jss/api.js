@@ -48,3 +48,54 @@ function correo(Valor) {
     }
     return Correo;
 } // Verifica la estructura del correo ingresado
+
+function normalizar(Valor) {
+    return String(Valor).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+} // normaliza los mayusculas o tildes y cosas asi para no tener problemas con el como se ingresan
+
+function opcion(Valor, Opciones, Campo) {
+    const Encontrado = Opciones.find(function (Item) {
+        return normalizar(Item) === normalizar(Valor);
+    });
+    if (!Encontrado) {
+        fallar(422, Campo + ": selecciona una opción válida.");
+    }
+    return Encontrado;
+} // Revisa que la opcion ingresada sea valida (la normaliza para encontrar con el .find)
+
+function fecha(Valor) {
+    if (typeof Valor !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(Valor)) {
+        fallar(422, "La fecha debe tener formato AAAA-MM-DD.");
+    }
+    const Fecha = new Date(Valor + "T00:00:00Z");
+    if (!Number.isFinite(Fecha.getTime()) || Fecha.toISOString().slice(0, 10) !== Valor) {
+        fallar(422, "La fecha indicada no existe.");
+    }
+    return Valor;
+} // Valida que la fecha este correctamente ingresada y que exista klsajgksdhk (no limita fechas futuras)
+
+function publico(Usuario) {
+    return {
+        id: Usuario.id, nombre: Usuario.nombre, apellido: Usuario.apellido,
+        correo: Usuario.correo, rol: Usuario.rol, estado: Usuario.estado
+    };
+} // No devolvemos contraseñas, solo el resto de datos del usuario
+
+function buscar(Lista, Id) {
+    const Elemento = Lista.find(function (Item) { return Item.id === Id; });
+    if (!Elemento) {
+        fallar(404, "No se encontró el recurso solicitado.");
+    }
+    return Elemento;
+} // Busca elemento por id
+
+function nuevoId(Lista, Prefijo) {
+    let Numero = 1;
+    Lista.forEach(function (Item) {
+        const Sufijo = Number(Item.id.slice(Prefijo.length));
+        if (Number.isInteger(Sufijo)) {
+            Numero = Math.max(Numero, Sufijo + 1);
+        }
+    });
+    return Prefijo + String(Numero).padStart(3, "0");
+} // Devuelve un nuevo id con su prefijo y numero correspondiente (al revisar la lista)
