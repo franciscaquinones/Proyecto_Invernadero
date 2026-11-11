@@ -11,3 +11,5 @@ de este proyecto (Arklay Botanics / Umbrella Corps Botanics).
 | 2026-10-25 | @oscaroviedo-png | ChatGPT (GPT-6) | Mejora a botón de volver atrás mediante CSS | [Ver registro](2026-10-25_oscaroviedo-png_boton-volver.md) |
 | 2026-10-25 | @oscaroviedo-png | ChatGPT (GPT-6) | Organización del resumen en dashboard mediante CSS | [Ver registro](2026-10-25_oscaroviedo-png_resumen-dashboard-css.md) |
 | 2026-10-26 | @oscaroviedo-png | ChatGPT (GPT-6) | Adaptación de la tabla de cultivos | [Ver registro](2026-10-26_oscaroviedo-png_vista-tabla-cultivos.md) |
+| 2026-11-11 | @oscaroviedo-png | ChatGPT (GPT-6) | Validación y carga de archivos JS | [Ver registro](2026-11-11_oscaroviedo-png_validacion-carga-json.md) |
+| 2026-11-11 | @oscaroviedo-png | ChatGPT (GPT-6) | Cola de operaciones con promesas en JS | [Ver registro](2026-11-11_oscaroviedo-png_cola-operaciones.md) |
