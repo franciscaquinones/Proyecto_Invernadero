@@ -1,3 +1,8 @@
+const LATENCIA = 500; // Tiempo de "espera" (simulado)
+// [IA] inicio · ia/2026-11-11_oscaroviedo-png_cola-operaciones.md
+let Cola = Promise.resolve(); // Evita que se traten de ejecutar 2 operaciones al mismo tiempo
+// [IA] fin
+
 const CLAVE_DATOS = "api_de_arklay"; // Nombre para identificar en localStorage
 const ARCHIVOS = {
     usuarios: "Usuarios.json",
@@ -235,4 +240,45 @@ async function cargarBase() {
     localStorage.setItem(CLAVE_DATOS, JSON.stringify(Base));
     // [IA] fin
     return Base;
+}
+
+function esperar(Milisegundos) {
+    return new Promise(function (resolve) {
+        setTimeout(resolve, Milisegundos);
+    });
+} // Funcion que recibe milisegundos y devuelve una promesa para que espere y despues resuelva
+
+// Operacion es la función que consulta o cambia los datos
+// Escritura indica si debemos guardarlos; Status vale 201 al crear y 200 en el resto
+// Conservamos la cola para que dos guardados de esta pestaña no se pisen
+async function ejecutar(Opciones, Operacion, Escritura = false, Status = 200) {
+    // [IA] inicio · ia/2026-11-11_oscaroviedo-png_cola-operaciones.md
+    const Turno = Cola.then(async function () {
+        // [IA] fin
+        try {
+            await esperar(LATENCIA);
+            objeto(Opciones);
+            if (Opciones.forzarError === true) {
+                fallar(503, "Fallo simulado de conexión. Puedes reintentar la operación.");
+            }
+            const Base = await cargarBase();
+            const Datos = Operacion(Base);
+            if (Escritura) {
+                validarBase(Base);
+                // Un solo guardado incluye también las eliminaciones en cascada.
+                localStorage.setItem(CLAVE_DATOS, JSON.stringify(Base));
+            }
+            return { ok: true, status: Status, data: JSON.parse(JSON.stringify(Datos)), error: null };
+        }
+        catch (ErrorApi) {
+            return {
+                ok: false, status: ErrorApi.status || 500, data: null,
+                error: ErrorApi.status ? ErrorApi.message : "No se pudo completar la operación. Revisa el almacenamiento del navegador e intenta nuevamente."
+            };
+        }
+    });
+    // [IA] inicio · ia/2026-11-11_oscaroviedo-png_cola-operaciones.md
+    Cola = Turno.then(function () {});
+    return Turno;
+    // [IA] fin
 }
