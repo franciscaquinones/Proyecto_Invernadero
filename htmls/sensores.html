@@ -6,6 +6,7 @@
     <link rel="shortcut icon" href="../imgs/Logo_Pub.png">
     <link rel="stylesheet" href="../csss/Estilo_Interno.css">
     <link rel="stylesheet" href="../csss/Sensores.css">
+     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script> <!-- agregamos el alphine -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../jss/Filtro_Sensores.js" defer></script>
     <title>
@@ -55,14 +56,18 @@
             <p>En esta pestaña puede ver, agregar, editar y eliminar los sensores asociados a su invernadero</p>
         </section>
         <section>
-            <h2>Buscar por nombre:</h2>
+            <h2>Buscar sensor:</h2>
             <div class="Campo_Filtro">
                 <label for = "Busqueda"> Nombre del sensor:</label>
                 <input  type ="text" id="Busqueda" name="Busqueda" placeholder="Ej: S-02">
             </div>
-        </section>
-        <section>
-            <h2>Filtrar sensores:</h2>
+            <div x-data="{abierto:false}">
+            <h2>   
+            <button type="button" @click="abierto=!abierto">
+                Filtrar sensores
+            </button>
+            </h2>
+            <div x-show="abierto">
             <form id="Formulario_Filtros_Sensores">
                     <div class="Campo_Filtro">
                         <label for="Tipo">Tipo:</label>
@@ -102,8 +107,6 @@
                             <option value="Nombre_Des">Nombre Z-A</option>
                         </select>
                     </div>
-                </div>
-
                 <div class="Acciones_Filtro">
                     <button type="submit" id="Boton_De_Filtro_Sensor">
                         Aplicar filtros
@@ -115,7 +118,8 @@
                 </div>
 
             </form>
-
+            </div>
+            </div>
             <button type="button" id="Boton_De_Agregar_Sensor">
                 Agregar nuevo sensor
             </button>
