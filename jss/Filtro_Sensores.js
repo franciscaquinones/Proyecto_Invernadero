@@ -1,227 +1,150 @@
-// Función de búsqueda y filtrado de sensores
-const ListaDeSensores = document.getElementById("LISTA_DE_SENSORES");
-const BotonDeFiltroSensor = document.getElementById("Boton_De_Filtro_Sensor");
-const FormularioFiltrosSensores = document.getElementById("Formulario_Filtros_Sensores");
-const BotonDeLimpiarFiltrosSensores = document.getElementById("Boton_De_Limpiar_Filtros_Sensores");
-const CampoBusqueda = document.getElementById("Busqueda");
-if (ListaDeSensores && BotonDeFiltroSensor && FormularioFiltrosSensores && BotonDeLimpiarFiltrosSensores && CampoBusqueda) {
-// Permite comparar textos sin importar tildes o mayusculas.
-      function NormalizarTexto(Texto) {
-        return Texto.normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .toLowerCase()
-            .trim();
-    }
-    function AplicarFiltrosSensores() {
-        const Busqueda = NormalizarTexto(document.getElementById("Busqueda").value);
-        const Tipo = document.getElementById("Tipo").value;
-        const Ubicacion = document.getElementById("Ubicacion").value;
-        const Estado = document.getElementById("Estado").value;
-        const Orden = document.getElementById("Orden").value;
-        const Filas = Array.from(ListaDeSensores.querySelectorAll("tr"));//con las filas ahora hacemos un arreglo para ordenar
-        Filas.sort(function(Fila1,Fila2){
-            const Nombre1 = NormalizarTexto(Fila1.cells[0].textContent);
-            const Nombre2 = NormalizarTexto(Fila2.cells[0].textContent);
-            if(Orden==="Nombre_Asc"){
-                return Nombre1.localeCompare(Nombre2,"es", {sensitivity: "base" });
+import Alpine from "https://cdn.jsdelivr.net/npm/alpinejs@3.17.5/dist/module.esm.js";
+import { obtenerSensores, crearSensor, editarSensor, eliminarSensor } from "./api.js";
+Alpine.data("sensoresUsuario", function() {
+    return {
+        sensores: [],
+        cargando: false,
+        guardando: false,
+        errorCarga: "",
+        errorGuardado: "",
+        mensajeExito: "",
+        formularioAbierto: false,
+        editandoId: null,
+        sensorEliminar: null,
+        consultaActual: 0,
+        filtros: { busqueda: "", tipo: "Todos", estado: "Todos", ubicacion: "Todos", orden: "Nombre_ASC" },
+        formulario: { nombre: "", tipo: "", estado: "", ubicacion: "" },
+        errores: {},
+        revisarAcceso(Respuesta) {
+            if (Respuesta.status === 401 || Respuesta.status === 403) {
+                window.location.replace("login.html");
             }
-            if(Orden==="Nombre_Des"){
-                return Nombre2.localeCompare(Nombre1, "es",{sensitivity:"base"});
+        },
+        async cargarSensores() {
+            // Una respuesta antigua no debe reemplazar una búsqueda más reciente.
+            const Consulta = ++this.consultaActual;
+            this.cargando = true;
+            this.errorCarga = "";
+            this.sensores = [];
+            try {
+                const Respuesta = await obtenerSensores({ ...this.filtros });
+                if (Consulta !== this.consultaActual) return;
+                if (!Respuesta.ok) {
+                    this.revisarAcceso(Respuesta);
+                    this.errorCarga = Respuesta.error;
+                    return;
+                }
+                this.sensores = Respuesta.data;
             }
-        })
-        Filas.forEach(function (Fila) {
-
-            const NombreSensor = NormalizarTexto(Fila.cells[0].textContent);//la busqueda elimina tildes y mayus 
-            const TipoSensor = Fila.cells[1].textContent.trim();
-            const UbicacionSensor = Fila.cells[2].textContent.trim();
-            const EstadoSensor = Fila.cells[3].textContent.trim();
-
-            const CoincideElNombre = NombreSensor.includes(Busqueda);
-
-            const CoincideElTipo = Tipo === "Todos" || TipoSensor.toLowerCase() === Tipo.toLowerCase();
-
-            const CoincideLaUbicacion = Ubicacion === "Todos" || UbicacionSensor.toLowerCase() === Ubicacion.toLowerCase();
-
-            const CoincideElEstado = Estado === "Todos" || EstadoSensor.toLowerCase() === Estado.toLowerCase();
-
-            if (CoincideElNombre && CoincideElTipo && CoincideLaUbicacion && CoincideElEstado) {
-                Fila.style.display = "";
+            catch {
+                if (Consulta === this.consultaActual) {
+                    this.errorCarga = "No se pudieron cargar los sensores. Intenta nuevamente.";
+                }
             }
-            else {
-                Fila.style.display = "none";
+            finally {
+                if (Consulta === this.consultaActual) this.cargando = false;
             }
-            ListaDeSensores.appendChild(Fila);//vuelve a poner las filas en el orden dado
 
-        });
+        },
+        limpiarFiltros() {
+            if (this.guardando) return;
+            this.filtros = { busqueda: "", tipo: "Todos", estado: "Todos", ubicacion: "Todos", orden: "Nombre_ASC" };
+            return this.cargarSensores();
+        },
+        abrirFormulario(Sensor = null) {
+            if (this.guardando) return;
+            this.editandoId = Sensor ? Sensor.id : null;
+            this.formulario = Sensor ? {
+                nombre: Sensor.nombre, tipo: Sensor.tipo, estado: Sensor.estado,
+                ubicacion: Sensor.ubicacion
+            } : { nombre: "", tipo: "", estado: "", ubicacion: "" };
+            this.errores = {};
+            this.errorGuardado = "";
+            this.mensajeExito = "";
+            this.sensorEliminar = null;
+            this.formularioAbierto = true;
 
+        },
+        cancelarFormulario() {
+            if (this.guardando) return;
+            this.formularioAbierto = false;
+            this.editandoId = null;
+            this.errores = {};
+            this.errorGuardado = "";
+        },
+        validarFormulario() {
+            this.errores = {};
+            const Datos = this.formulario;
+            if (!Datos.nombre.trim() || Datos.nombre.trim().length > 120) {
+                this.errores.nombre = "Ingresa un nombre de entre 1 y 120 caracteres.";
+            }
+            if (!["Temperatura", "Humedad", "Luminosidad"].includes(Datos.tipo)) {
+                this.errores.tipo = "Selecciona un tipo de sensor.";
+            }
+            if (!["Activo", "Inactivo", "Mantenimiento"].includes(Datos.estado)) {
+                this.errores.estado = "Selecciona un estado.";
+            }
+            if (!["Sector Alpha", "Sector Beta", "Sector Falco", "Sector Delta", "Sector Gamma"].includes(Datos.ubicacion)) {
+                this.errores.ubicacion = "Selecciona un sector.";
+            }
+            return Object.keys(this.errores).length === 0;
+
+        },
+
+        async guardarSensor() {
+            if (this.guardando || !this.formularioAbierto) return;
+            this.errorGuardado = "";
+            if (!this.validarFormulario()) return;
+            this.guardando = true;
+            try {
+                const Datos = { ...this.formulario };
+                const Respuesta = this.editandoId ? await editarSensor(this.editandoId, Datos) : await crearSensor(Datos);
+                if (!Respuesta.ok) {
+                    this.revisarAcceso(Respuesta);
+                    this.errorGuardado = Respuesta.error;
+                    return;
+                }
+                this.mensajeExito = this.editandoId ? "Sensor actualizado correctamente." : "Sensor creado correctamente.";
+                this.formularioAbierto = false;
+                this.editandoId = null;
+                // Conservamos los filtros, aunque el sensor quede fuera de la selección.
+                await this.cargarSensores();
+            }
+            finally {
+                this.guardando = false;
+            }
+        },
+        prepararEliminacion(Sensor) {
+            if (this.guardando) return;
+            this.cancelarFormulario();
+            this.sensorEliminar = Sensor;
+            this.errorGuardado = "";
+            this.mensajeExito = "";
+        },
+        cancelarEliminacion() {
+            if (this.guardando) return;
+            this.sensorEliminar = null;
+            this.errorGuardado = "";
+        },
+        async confirmarEliminacion() {
+            if (this.guardando || !this.sensorEliminar) return;
+            this.guardando = true;
+            this.errorGuardado = "";
+            try {
+                const Respuesta = await eliminarSensor(this.sensorEliminar.id);
+                if (!Respuesta.ok) {
+                    this.revisarAcceso(Respuesta);
+                    this.errorGuardado = Respuesta.error;
+                    return;
+                }
+                this.sensorEliminar = null;
+                this.mensajeExito = "Sensor eliminado correctamente.";
+                await this.cargarSensores();
+            }
+            finally {
+                this.guardando = false;
+            }
+        }
     };
-
-    FormularioFiltrosSensores.addEventListener("submit", function (E) {
-        E.preventDefault();
-        AplicarFiltrosSensores();
-    });
-     document.getElementById("Orden").addEventListener("change", AplicarFiltrosSensores);//para que funcione el orden A-Z o Z-A
-     CampoBusqueda.addEventListener("input", AplicarFiltrosSensores); //para que funcione la busqueda dinánica 
-    BotonDeLimpiarFiltrosSensores.addEventListener("click", function () {
-        FormularioFiltrosSensores.reset();
-        AplicarFiltrosSensores();
-    });
-
-}
-
-
-// Función de agregar sensor
-const BotonDeAgregarSensor = document.getElementById("Boton_De_Agregar_Sensor");
-
-if (BotonDeAgregarSensor && ListaDeSensores) {
-
-    BotonDeAgregarSensor.addEventListener("click", function () {
-
-        const Nombre = prompt("Ingrese el nombre del sensor (Ej: S-04):");
-
-        if (!Nombre || !Nombre.trim()) {
-            return;
-        }
-
-        const Tipo = prompt("Ingrese el tipo del sensor: Temperatura, Humedad o Luminosidad");
-
-        if (!Tipo || !Tipo.trim()) {
-            return;
-        }
-
-        const Ubicacion = prompt("Ingrese la ubicación del sensor: Sector Alpha, Beta, Falco, Delta o Gamma");
-
-        if (!Ubicacion || !Ubicacion.trim()) {
-            return;
-        }
-
-        const Estado = prompt("Ingrese el estado del sensor: Activo, Inactivo o Mantenimiento");
-
-        if (!Estado || !Estado.trim()) {
-            return;
-        }
-
-        const Medicion = prompt("Ingrese la última medición del sensor (Ej: 25 °C, 70%):");
-
-        if (!Medicion || !Medicion.trim()) {
-            return;
-        }
-
-        const Fila = document.createElement("tr");
-
-        const NombreCelda = Fila.insertCell();
-        NombreCelda.textContent = Nombre.trim();
-
-        const TipoCelda = Fila.insertCell();
-        TipoCelda.textContent = Tipo.trim();
-
-        const UbicacionCelda = Fila.insertCell();
-        UbicacionCelda.textContent = Ubicacion.trim();
-
-        const EstadoCelda = Fila.insertCell();
-        EstadoCelda.textContent = Estado.trim();
-
-        const MedicionCelda = Fila.insertCell();
-        MedicionCelda.textContent = Medicion.trim();
-
-        const Acciones = Fila.insertCell();
-
-        Acciones.innerHTML = `
-            <button type="button" class="Boton_De_Editar">Modificar</button>
-            <button type="button" class="Boton_De_Eliminar">Eliminar</button>
-        `;
-
-        ListaDeSensores.appendChild(Fila);
-
-        alert("Sensor agregado correctamente.");
-
-    });
-
-}
-
-
-
-// Función de eliminar y modificar sensores
-if (ListaDeSensores) {
-
-    ListaDeSensores.addEventListener("click", function (E) {
-
-        const Boton = E.target.closest("button");
-
-        if (!Boton) {
-            return;
-        }
-
-        const Fila = Boton.closest("tr");
-
-        if (!Fila) {
-            return;
-        }
-
-
-        // Lo de abajo elimina el sensor
-
-        if (Boton.classList.contains("Boton_De_Eliminar")) {
-
-            const Nombre = Fila.cells[0].textContent;
-
-            const Confirmar = confirm("¿Estás seguro de que deseas eliminar el sensor " + Nombre + "?");
-
-            if (Confirmar) {
-
-                Fila.remove();
-
-                alert("Sensor eliminado correctamente.");
-
-            }
-
-        }
-
-
-        // Lo de abajo sirve para editar el sensor
-
-        if (Boton.classList.contains("Boton_De_Editar")) {
-
-            const NombreActual = Fila.cells[0].textContent;
-            const TipoActual = Fila.cells[1].textContent;
-            const UbicacionActual = Fila.cells[2].textContent;
-            const EstadoActual = Fila.cells[3].textContent;
-            const MedicionActual = Fila.cells[4].textContent;
-
-
-            const NuevoNombre = prompt("Nombre del sensor:", NombreActual);
-
-            const NuevoTipo = prompt("Tipo:", TipoActual);
-
-            const NuevaUbicacion = prompt("Ubicación:", UbicacionActual);
-
-            const NuevoEstado = prompt("Estado:", EstadoActual);
-
-            const NuevaMedicion = prompt("Última medición:", MedicionActual);
-
-
-            if (NuevoNombre && NuevoNombre.trim()) {
-                Fila.cells[0].textContent = NuevoNombre.trim();
-            }
-
-            if (NuevoTipo && NuevoTipo.trim()) {
-                Fila.cells[1].textContent = NuevoTipo.trim();
-            }
-
-            if (NuevaUbicacion && NuevaUbicacion.trim()) {
-                Fila.cells[2].textContent = NuevaUbicacion.trim();
-            }
-
-            if (NuevoEstado && NuevoEstado.trim()) {
-                Fila.cells[3].textContent = NuevoEstado.trim();
-            }
-
-            if (NuevaMedicion && NuevaMedicion.trim()) {
-                Fila.cells[4].textContent = NuevaMedicion.trim();
-            }
-
-        }
-
-    });
-
-}
+});
+Alpine.start();
