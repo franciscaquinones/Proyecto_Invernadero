@@ -50,11 +50,11 @@ async function comprobarSesion() {
                 return;
             }
             MensajeSesion.textContent = Respuesta.error;
-            BotonReintentar.hiden = false;
+            BotonReintentar.hidden = false;
             return;
         }
 
-        const Usuario = Respuesat.data;
+        const Usuario = Respuesta.data;
         const RolNecesario = document.body.dataset.rol;
         const EsAdministrador = Usuario.rol === "administrador";
         const PaginaInicio = EsAdministrador ? "admin.html" : "dashboard.html";
