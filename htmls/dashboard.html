@@ -80,13 +80,13 @@
                     <p x-text="resumen.totalCultivos"></p>
                 </article>
             </template>
-            <template if="resumen">
+            <template x-if="resumen">
                 <article>
                     <h3>Cantidad Total de Sensores</h3>
                     <p x-text="resumen.totalSensores"></p>
                 </article>
             </template>
-            <template if="resumen">
+            <template x-if="resumen">
                 <article>
                     <h3>Cantidad Total de Registros</h3>
                     <p x-text="resumen.totalRegistros"></p>
