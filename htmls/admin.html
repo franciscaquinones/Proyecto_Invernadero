@@ -140,6 +140,10 @@
                             </select>
                         </div>
                     </div>
+                    <div class="Acciones_Filtro_Admin">
+                        <button type="submit" class="Boton_Admin">Aplicar filtros</button>
+                        <button type="button" id="Limpiar_Filtros_Admin" class="Boton_Admin" @click="limpiarFiltros()">Limpiar filtros</button>
+                    </div>
                 </fieldset>
             </form>
             <p x-show="cargando" role="status">Cargando usuarios...</p>
@@ -150,7 +154,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th scope="col">Nomber</th>
+                            <th scope="col">Nombre</th>
                             <th scope="col">Correo</th>
                             <th scope="col">Rol</th>
                             <th scope="col">Estado</th>
@@ -179,7 +183,7 @@
             <p class="Error_Admin" x-show="errorRecursos" x-text="errorRecursos" role="alert"></p>
             <button type="button" class="Boton_Admin" x-show="errorRecursos" :disabled="cargandoRecursos || eliminando" @click="verRecursos(usuarioSeleccionado)">Reintentar recursos</button>
 
-            <template if="recursos">
+            <template x-if="recursos">
                 <div>
                     <template x-if="recursos.invernadero">
                         <div class="Detalle_Admin">
@@ -191,7 +195,7 @@
                     <p x-show="!recursos.invernadero" x-text="recursos.usuario.rol === 'administrador' ? 'Acceso administrativo global. Esta cuenta no tiene un invernadero asignado.' : 'Esta cuenta no tiene un invernadero asignado.'"></p>
 
                     <h3>Cultivos</h3>
-                    <p x-show="recursos.cultivos.length === 0">No tiene registros.</p>
+                    <p x-show="recursos.cultivos.length === 0">No tiene cultivos registrados.</p>
                     <div class="Tabla_Contenedor" x-show="recursos.cultivos.length > 0" tabindex="0">
                         <table>
                             <thead><tr><th scope="col">Identificador</th><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Estado</th></tr></thead>
@@ -220,17 +224,17 @@
             </template>
         </section>
 
-        <section id="Cuetnas">
+        <section id="Cuentas">
             <h2>
                 Administración de Cuentas
             </h2>
-            <p x-show="!recursos">Selecciona «Ver recursos» para revisar una cuenta antes de eliminarla.</p>
+            <p x-show="!recursos">Selecciona «Ver recursos» en la tabla de usuarios para revisar una cuenta antes de eliminarla.</p>
             <p class="Exito_Admin" x-show="mensajeExito" x-text="mensajeExito" role="status"></p>
             <template x-if="recursos">
                 <div>
                     <p>Cuenta seleccionada: <strong x-text="recursos.usuario.nombre + ' ' + recursos.usuario.apellido"></strong> · <span x-text="recursos.usuario.correo"></span></p>
                     <p x-show="recursos.usuario.id === administradorId">No puedes eliminar la cuenta con la que estás administrando.</p>
-                    <p x-show="!administradorId">No se pudo identificar la sesión para habilitar el borrado</p>
+                    <p x-show="!administradorId">No se pudo identificar la sesión para habilitar el borrado. Recarga la página e intenta nuevamente.</p>
                     <button type="button" class="Boton_Admin" x-show="!confirmando" @click="prepararEliminacion()"
                         :disabled="!administradorId || recursos.usuario.id === administradorId || cargando || cargandoEstadisticas || eliminando">Eliminar cuenta</button>
 
