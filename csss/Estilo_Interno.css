@@ -6,7 +6,7 @@ body {
     color: #eeeeee;
 }
 main[hidden] {
-    display: none; <!-- añadimos esto para que el usuario no vea antes de la comprobacion -->
+    display: none; /* añadimos esto para que el usuario no vea antes de la comprobacion */
 } 
 
 header {
