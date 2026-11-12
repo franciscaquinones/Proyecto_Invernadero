@@ -1,279 +1,186 @@
-/* BUSQUEDA, FILTROS Y ORDENAMIENTO DE CULTIVOS */
+import Alpine from "https://cdn.jsdelivr.net/npm/alpinejs@3.17.5/dist/module.esm.js";
+import { obtenerCultivos, crearCultivo, editarCultivo, eliminarCultivo } from "./api.js";
 
-const ListaDeCultivos = document.getElementById("LISTA_DE_CULTIVOS");
-const BotonDeFiltro = document.getElementById("Boton_De_Filtro");
-const BotonDeLimpiarFiltros = document.getElementById("Boton_De_Limpiar_Filtros");
-const FormularioFiltros = document.getElementById("Formulario_Filtros");
-const CampoBusqueda = document.getElementById("Busqueda");
+Alpine.data("cultivosUsuario", function() {
 
-if (ListaDeCultivos && BotonDeFiltro && FormularioFiltros && CampoBusqueda) {
-    // Permite comparar textos sin importar tildes o mayusculas.
-    function NormalizarTexto(Texto) {
-        return Texto.normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .toLowerCase()
-            .trim();
-    }
+    return {
 
-    function AplicarFiltros() {
+        cultivos: [],
+        cargando: false,
+        guardando: false,
+        errorCarga: "",
+        errorGuardado: "",
+        mensajeExito: "",
+        formularioAbierto: false,
+        editandoId: null,
+        cultivoEliminar: null,
+        consultaActual: 0,
+        filtros: { busqueda: "", tipo: "Todos", estado: "Todos", orden: "Original" },
+        formulario: { nombre: "", tipo: "", estado: "", nivelCuarentena: "", fechaIncubacion: "" },
+        errores: {},
 
-        const Busqueda = NormalizarTexto(
-            CampoBusqueda.value
-        );
+        revisarAcceso(Respuesta) {
+            if (Respuesta.status === 401 || Respuesta.status === 403) {
+                window.location.replace("login.html");
+            }
+        },
 
-        const Fase = document.getElementById("Fase").value;
-        const Tipo = NormalizarTexto(
-            document.getElementById("Tipo").value
-        );
-        const Orden = document.getElementById("Orden").value;
+        async cargarCultivos() {
 
-        const Filas = Array.from(
-            ListaDeCultivos.querySelectorAll("tr")
-        );
-        // ORDENAMIENTO
-        Filas.sort(function (FilaA, FilaB) {
+            // Una respuesta antigua no debe reemplazar una búsqueda más reciente.
+            const Consulta = ++this.consultaActual;
+            this.cargando = true;
+            this.errorCarga = "";
+            this.cultivos = [];
 
-            const NombreA = FilaA.cells[0].textContent.trim();
-            const NombreB = FilaB.cells[0].textContent.trim();
-
-            if (Orden === "Nombre_Asc") {
-                return NombreA.localeCompare(NombreB, "es", {
-                    sensitivity: "base"
-                });
+            try {
+                const Respuesta = await obtenerCultivos({ ...this.filtros });
+                if (Consulta !== this.consultaActual) return;
+                if (!Respuesta.ok) {
+                    this.revisarAcceso(Respuesta);
+                    this.errorCarga = Respuesta.error;
+                    return;
+                }
+                this.cultivos = Respuesta.data;
+            }
+            catch {
+                if (Consulta === this.consultaActual) {
+                    this.errorCarga = "No se pudieron cargar los cultivos. Intenta nuevamente.";
+                }
+            }
+            finally {
+                if (Consulta === this.consultaActual) this.cargando = false;
             }
 
-            if (Orden === "Nombre_Des") {
-                return NombreB.localeCompare(NombreA, "es", {
-                    sensitivity: "base"
-                });
+        },
+
+        limpiarFiltros() {
+            if (this.guardando) return;
+            this.filtros = { busqueda: "", tipo: "Todos", estado: "Todos", orden: "Original" };
+            return this.cargarCultivos();
+        },
+
+        abrirFormulario(Cultivo = null) {
+
+            if (this.guardando) return;
+            this.editandoId = Cultivo ? Cultivo.id : null;
+            this.formulario = Cultivo ? {
+                nombre: Cultivo.nombre, tipo: Cultivo.tipo, estado: Cultivo.estado,
+                nivelCuarentena: Cultivo.nivelCuarentena, fechaIncubacion: Cultivo.fechaIncubacion
+            } : { nombre: "", tipo: "", estado: "", nivelCuarentena: "", fechaIncubacion: "" };
+            this.errores = {};
+            this.errorGuardado = "";
+            this.mensajeExito = "";
+            this.cultivoEliminar = null;
+            this.formularioAbierto = true;
+
+        },
+
+        cancelarFormulario() {
+            if (this.guardando) return;
+            this.formularioAbierto = false;
+            this.editandoId = null;
+            this.errores = {};
+            this.errorGuardado = "";
+        },
+
+        validarFormulario() {
+
+            this.errores = {};
+            const Datos = this.formulario;
+            if (!Datos.nombre.trim() || Datos.nombre.trim().length > 120) {
+                this.errores.nombre = "Ingresa un nombre de entre 1 y 120 caracteres.";
+            }
+            if (!["Virus", "Biológico", "Parásito", "Hongo"].includes(Datos.tipo)) {
+                this.errores.tipo = "Selecciona un tipo de cultivo.";
+            }
+            if (!["Activo", "En Desarrollo", "Experimental", "Finalizado"].includes(Datos.estado)) {
+                this.errores.estado = "Selecciona un estado.";
+            }
+            const Nivel = Number(Datos.nivelCuarentena);
+            if (String(Datos.nivelCuarentena).trim() === "" || !Number.isInteger(Nivel) || Nivel < 0 || Nivel > 10) {
+                this.errores.nivelCuarentena = "Ingresa un entero entre 0 y 10.";
+            }
+            const Fecha = new Date(Datos.fechaIncubacion + "T00:00:00Z");
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(Datos.fechaIncubacion) || !Number.isFinite(Fecha.getTime()) || Fecha.toISOString().slice(0, 10) !== Datos.fechaIncubacion) {
+                this.errores.fechaIncubacion = "Ingresa una fecha válida.";
+            }
+            return Object.keys(this.errores).length === 0;
+
+        },
+
+        async guardarCultivo() {
+
+            if (this.guardando || !this.formularioAbierto) return;
+            this.errorGuardado = "";
+            if (!this.validarFormulario()) return;
+            this.guardando = true;
+
+            try {
+                const Datos = { ...this.formulario };
+                const Respuesta = this.editandoId ? await editarCultivo(this.editandoId, Datos) : await crearCultivo(Datos);
+                if (!Respuesta.ok) {
+                    this.revisarAcceso(Respuesta);
+                    this.errorGuardado = Respuesta.error;
+                    return;
+                }
+                this.mensajeExito = this.editandoId ? "Cultivo actualizado correctamente." : "Cultivo creado correctamente.";
+                this.formularioAbierto = false;
+                this.editandoId = null;
+                // Conservamos los filtros, aunque el cultivo quede fuera de la selección.
+                await this.cargarCultivos();
+            }
+            catch {
+                this.errorGuardado = "No se pudo guardar el cultivo. Intenta nuevamente.";
+            }
+            finally {
+                this.guardando = false;
             }
 
-            return 0;
+        },
 
-        });
+        prepararEliminacion(Cultivo) {
+            if (this.guardando) return;
+            this.cancelarFormulario();
+            this.cultivoEliminar = Cultivo;
+            this.errorGuardado = "";
+            this.mensajeExito = "";
+        },
 
-        // BUSQUEDA Y FILTRADO
-        Filas.forEach(function (Fila) {
+        cancelarEliminacion() {
+            if (this.guardando) return;
+            this.cultivoEliminar = null;
+            this.errorGuardado = "";
+        },
 
-            const NombreCultivo = NormalizarTexto(
-                Fila.cells[0].textContent
-            );
+        async confirmarEliminacion() {
 
-            const TipoCultivo = NormalizarTexto(
-                Fila.cells[1].textContent
-            );
+            if (this.guardando || !this.cultivoEliminar) return;
+            this.guardando = true;
+            this.errorGuardado = "";
 
-            const EstadoCultivo = Fila.cells[2].textContent.trim();
-
-            const CoincideNombre = NombreCultivo.includes(Busqueda);
-
-            const CoincideEstado =
-                Fase === "Todos" || EstadoCultivo === Fase;
-
-            const CoincideTipo =
-                Tipo === "todos" || TipoCultivo === Tipo;
-
-            if (CoincideNombre && CoincideEstado && CoincideTipo) {
-                Fila.style.display = "";
+            try {
+                const Respuesta = await eliminarCultivo(this.cultivoEliminar.id);
+                if (!Respuesta.ok) {
+                    this.revisarAcceso(Respuesta);
+                    this.errorGuardado = Respuesta.error;
+                    return;
+                }
+                this.cultivoEliminar = null;
+                this.mensajeExito = "Cultivo eliminado correctamente.";
+                await this.cargarCultivos();
             }
-            else {
-                Fila.style.display = "none";
+            catch {
+                this.errorGuardado = "No se pudo eliminar el cultivo. Intenta nuevamente.";
             }
-
-            ListaDeCultivos.appendChild(Fila);
-        });
-
-    }
-    //Implementamos la búsqueda dinámica 
-    CampoBusqueda.addEventListener("input", AplicarFiltros);
-    //orden dinamico, no hay que apretar el boton para que se ordene alfabeticamente 
-    document.getElementById("Orden").addEventListener("change", AplicarFiltros);
-    // BOTON APLICAR FILTROS
-    BotonDeFiltro.addEventListener("click", AplicarFiltros);
-
-    // Evita que Enter recargue la pagina.
-    FormularioFiltros.addEventListener("submit", function (E) {
-        E.preventDefault();
-        AplicarFiltros();
-    });
-
-    // BOTON LIMPIAR FILTROS
-    if (BotonDeLimpiarFiltros) {
-
-        BotonDeLimpiarFiltros.addEventListener("click", function (E) {
-
-            E.preventDefault();
-
-            FormularioFiltros.reset();
-            CampoBusqueda.value = "";
-            AplicarFiltros();
-
-        });
-
-    }
-
-    // Muestra inicialmente todos los cultivos.
-    AplicarFiltros();
-
-}
-
-
-//Función de agregar cultivo abajito...
-const BotonDeAgregar = document.getElementById("Boton_De_Agregar");
-
-if (BotonDeAgregar && ListaDeCultivos) {
-
-    BotonDeAgregar.addEventListener("click", function () {
-
-        const Nombre = prompt("Ingrese el nombre del cultivo:");
-
-        if (!Nombre) {
-            return;
-        }
-
-        const Tipo = prompt("Ingrese el tipo del cultivo:");
-
-        if (!Tipo) {
-            return;
-        }
-
-        const Estado = prompt("Ingrese el estado: Activo, En Desarrollo, Experimental o Finalizado");
-
-        if (!Estado) {
-            return;
-        }
-
-        const Cuarentena = prompt("Ingrese el nivel de cuarentena (de 0 a 10):");
-
-        if (!Cuarentena) {
-            return;
-        }
-
-        const Fecha = prompt("Ingrese la fecha de inicio (formato dd/mm/aaaa):");
-
-        if (!Fecha) {
-            return;
-        }
-
-        const Fila = document.createElement("tr");
-
-        const NombreCelda = Fila.insertCell();
-        NombreCelda.textContent = Nombre;
-
-        const TipoCelda = Fila.insertCell();
-        TipoCelda.textContent = Tipo;
-
-        const EstadoCelda = Fila.insertCell();
-        EstadoCelda.textContent = Estado;
-
-        const CuarentenaCelda = Fila.insertCell();
-        CuarentenaCelda.textContent = Cuarentena + "/10";
-
-        const FechaC = Fila.insertCell();
-        FechaC.textContent = Fecha;
-
-
-        const Acciones = Fila.insertCell();
-
-        Acciones.innerHTML = `<button type="button" class="Boton_De_Editar">Modificar</button>
-            <button type="button" class="Boton_De_Eliminar">Purgar</button>`;
-        ListaDeCultivos.appendChild(Fila);
-        BotonDeFiltro.click();
-
-    });
-
-}
-
-//Eliminar y editar cultivo,,,
-if (ListaDeCultivos) {
-
-    ListaDeCultivos.addEventListener("click", function (E) {
-
-        const Boton = E.target;
-
-        const Fila = Boton.closest("tr");
-
-
-        // Lo de abajo elimina el cultivo
-
-        if (Boton.classList.contains("Boton_De_Eliminar")) {
-
-            const Nombre = Fila.cells[0].textContent;
-
-            const Confirmar = confirm(
-                "¿Estás seguro de que deseas purgar el cultivo " + Nombre + "?"
-            );
-
-            if (Confirmar) {
-
-                Fila.remove();
-
-                alert("Cultivo purgado correctamente.");
-
+            finally {
+                this.guardando = false;
             }
 
         }
 
+    };
 
-        // Lo de abajo sirve pa editar el cultivo
+});
 
-        if (Boton.classList.contains("Boton_De_Editar")) {
-
-            const NombreActual = Fila.cells[0].textContent;
-            const TipoActual = Fila.cells[1].textContent;
-            const EstadoActual = Fila.cells[2].textContent;
-            const CuarentenaActual = Fila.cells[3].textContent.replace("/10", "").trim();
-            const FechaActual = Fila.cells[4].textContent;
-
-
-            const NuevoNombre = prompt(
-                "Nombre del cultivo:",
-                NombreActual
-            );
-
-            const NuevoTipo = prompt(
-                "Tipo:",
-                TipoActual
-            );
-
-            const NuevoEstado = prompt(
-                "Estado:",
-                EstadoActual
-            );
-
-            const NuevaCuarentena = prompt(
-                "Nivel de cuarentena:",
-                CuarentenaActual
-            );
-
-            const NuevaFecha = prompt(
-                "Fecha:",
-                FechaActual
-            );
-
-
-            if (NuevoNombre) {
-                Fila.cells[0].textContent = NuevoNombre;
-            }
-
-            if (NuevoTipo) {
-                Fila.cells[1].textContent = NuevoTipo;
-            }
-
-            if (NuevoEstado) {
-                Fila.cells[2].textContent = NuevoEstado;
-            }
-
-            if (NuevaCuarentena) {
-                Fila.cells[3].textContent = NuevaCuarentena + "/10";
-            }
-
-            if (NuevaFecha) {
-                Fila.cells[4].textContent = NuevaFecha;
-            }
-
-        }
-
-    });
-
-}
+Alpine.start();

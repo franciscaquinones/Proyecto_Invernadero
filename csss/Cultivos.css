@@ -22,6 +22,8 @@ label {
 }
 
 input[type="text"],
+input[type="number"],
+input[type="date"],
 select {
     padding: 10px 12px;
     margin: 10px 12px 17px 5px;
@@ -35,6 +37,8 @@ select {
 }
 
 input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
 select:focus {
     border-color: #dc2626;
     outline: 2px solid #c85c5c;
@@ -51,6 +55,33 @@ select:focus {
     display: flex;
     flex-direction: column;
     gap: 8px;
+}
+fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+}
+legend {
+    color: #cccccc;
+    margin-bottom: 20px;
+}
+.Error_Cultivos {
+    color: #fca5a5;
+    overflow-wrap: anywhere;
+}
+.Exito_Cultivos {
+    color: #86efac;
+}
+button:disabled,
+fieldset:disabled button,
+input:disabled,
+select:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+input[type="date"] {
+    color-scheme: dark;
 }
 
 .Campo_Filtro input,
@@ -194,4 +225,24 @@ button:focus-visible {
         flex-direction: column;
     }
 
+}
+[x-cloak] {
+    display: none !important;
+}
+.Boton_Desplegar_Filtros {
+    padding: 12px 18px;
+    margin-top: 15px;
+    border: 1px solid #50545e;
+    border-radius: 8px;
+    background-color: #343840;
+    color: white;
+    font: inherit;
+    cursor: pointer;
+}
+.Boton_Desplegar_Filtros:hover {
+    background-color: #50545e;
+}
+.Boton_Desplegar_Filtros:focus-visible {
+    outline: 2px solid #f87171;
+    outline-offset: 3px;
 }
