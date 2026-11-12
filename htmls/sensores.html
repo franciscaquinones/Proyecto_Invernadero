@@ -6,14 +6,14 @@
     <link rel="shortcut icon" href="../imgs/Logo_Pub.png">
     <link rel="stylesheet" href="../csss/Estilo_Interno.css">
     <link rel="stylesheet" href="../csss/Sensores.css">
-     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script> <!-- agregamos el alphine -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="../jss/Filtro_Sensores.js" defer></script>
+    <script type="module" src="../jss/main.js"></script>
+    <script type="module" src="../jss/Filtro_Sensores.js"></script>
     <title>
         Sensores - Umbrella Corps Botanics
     </title>
 </head>
-<body>
+<body data-rol="usuario">
     <header>
 
         <div id="Logo">
@@ -26,16 +26,18 @@
         <table>
             <tr>
                 <td>
-                    Usuario
+                    <a href="perfil.html" data-nombre-usuario>Usuario</a>
                 </td>
                 <td>
-                    <a href="login.html">
+                    <a href="login.html" data-cerrar-sesion>
                         Cerrar Sesión
                     </a>
                 </td>
             </tr>
         </table>
     </header>
+    <p id="Mensaje_Sesion" role="status"></p>
+    <button type="button" id="Reintentar_Sesion" hidden>Reintentar</button>
     <nav>
         <a href="dashboard.html">
             Inicio
@@ -50,7 +52,7 @@
             Historial
         </a>
     </nav>
-    <main>
+    <main hidden x-data="sensoresUsuario" x-init="cargarSensores()">
         <section>
             <h2>Vista y Administración de Sensores:</h2>
             <p>En esta pestaña puede ver, agregar, editar y eliminar los sensores asociados a su invernadero</p>
@@ -59,19 +61,20 @@
             <h2>Buscar sensor:</h2>
             <div class="Campo_Filtro">
                 <label for = "Busqueda"> Nombre del sensor:</label>
-                <input  type ="text" id="Busqueda" name="Busqueda" placeholder="Ej: S-02">
+                <input  type ="text" id="Busqueda" name="Busqueda" placeholder="Ej: S-02" x-model="filtros.busqueda" @input.debounce.300ms="cargarSensores()" :disabled="guardando">
             </div>
             <div x-data="{abierto:false}">
             <h2>   
-            <button type="button" @click="abierto=!abierto">
+            <button type="button" class="Boton_Desplegar_Filtros" @click="abierto=!abierto" :aria-expanded="abierto" aria-controls="Panel_Filtros_Sensores">
                 Filtrar sensores
             </button>
             </h2>
-            <div x-show="abierto">
-            <form id="Formulario_Filtros_Sensores">
+            <div id="Panel_Filtros_Sensores" x-show="abierto" x-transition x-cloak>
+            <form id="Formulario_Filtros_Sensores" @submit.prevent="cargarSensores()">
+                <div class="Campos_Filtro">
                     <div class="Campo_Filtro">
                         <label for="Tipo">Tipo:</label>
-                        <select id="Tipo" name="Tipo">
+                        <select id="Tipo" name="Tipo" x-model="filtros.tipo" :disabled="guardando">
                             <option value="Todos">Todos</option>
                             <option value="Temperatura">Temperatura</option>
                             <option value="Humedad">Humedad</option>
@@ -81,7 +84,7 @@
 
                     <div class="Campo_Filtro">
                         <label for="Ubicacion">Ubicación:</label>
-                        <select id="Ubicacion" name="Ubicacion">
+                        <select id="Ubicacion" name="Ubicacion" x-model="filtros.ubicacion" :disabled="guardando">
                             <option value="Todos">Todos</option>
                             <option value="Sector Alpha">Sector Alpha</option>
                             <option value="Sector Beta">Sector Beta</option>
@@ -93,7 +96,7 @@
 
                     <div class="Campo_Filtro">
                         <label for="Estado">Estado:</label>
-                        <select id="Estado" name="Estado">
+                        <select id="Estado" name="Estado" x-model="filtros.estado" :disabled="guardando">
                             <option value="Todos">Todos</option>
                             <option value="Activo">Activo</option>
                             <option value="Inactivo">Inactivo</option>
@@ -102,17 +105,18 @@
                     </div>
                     <div class="Campo_Filtro">
                         <label for="Orden">Ordenar:</label>
-                        <select id="Orden" name="Orden">
-                            <option value="Nombre_Asc">Nombre A-Z</option>
-                            <option value="Nombre_Des">Nombre Z-A</option>
+                        <select id="Orden" name="Orden" x-model="filtros.orden" :disabled="guardando" @change="cargarSensores()">
+                            <option value="Nombre_ASC">Nombre A-Z</option>
+                            <option value="Nombre_DESC">Nombre Z-A</option>
                         </select>
                     </div>
+                </div>
                 <div class="Acciones_Filtro">
-                    <button type="submit" id="Boton_De_Filtro_Sensor">
+                    <button type="submit" id="Boton_De_Filtro_Sensor" :disabled="guardando">
                         Aplicar filtros
                     </button>
 
-                    <button type="button" id="Boton_De_Limpiar_Filtros_Sensores">
+                    <button type="button" id="Boton_De_Limpiar_Filtros_Sensores" :disabled="guardando" @click="limpiarFiltros()">
                         Limpiar filtros
                     </button>
                 </div>
@@ -120,13 +124,83 @@
             </form>
             </div>
             </div>
-            <button type="button" id="Boton_De_Agregar_Sensor">
+            <button type="button" id="Boton_De_Agregar_Sensor" :disabled="guardando" @click="abrirFormulario()">
                 Agregar nuevo sensor
             </button>
         </section>
+        <section x-show="formularioAbierto" x-cloak>
+            <h2 x-text="editandoId ? 'Modificar sensor' : 'Agregar sensor'"></h2>
+            <p>La unidad se asigna según el tipo. La última medición se obtiene del historial.</p>
+            <form @submit.prevent="guardarSensor()" novalidate>
+                <fieldset :disabled="guardando">
+                    <legend>Datos del sensor</legend>
+                    <div class="Campos_Filtro">
+                        <div class="Campo_Filtro">
+                            <label for="Nombre_Sensor">Nombre:</label>
+                            <input id="Nombre_Sensor" type="text" x-model="formulario.nombre" maxlength="120" required aria-describedby="Error_Nombre">
+                            <p id="Error_Nombre" class="Error_Sensores" x-show="errores.nombre" x-text="errores.nombre" role="alert"></p>
+                        </div>
+                        <div class="Campo_Filtro">
+                            <label for="Tipo_Sensor">Tipo:</label>
+                            <select id="Tipo_Sensor" x-model="formulario.tipo" required aria-describedby="Error_Tipo">
+                                <option value="">Selecciona un tipo</option>
+                                <option>Temperatura</option>
+                                <option>Humedad</option>
+                                <option>Luminosidad</option>
+                            </select>
+                            <p id="Error_Tipo" class="Error_Sensores" x-show="errores.tipo" x-text="errores.tipo" role="alert"></p>
+                        </div>
+                        <div class="Campo_Filtro">
+                            <label for="Ubicacion_Sensor">Ubicación:</label>
+                            <select id="Ubicacion_Sensor" x-model="formulario.ubicacion" required aria-describedby="Error_Ubicacion">
+                                <option value="">Selecciona un sector</option>
+                                <option>Sector Alpha</option>
+                                <option>Sector Beta</option>
+                                <option>Sector Falco</option>
+                                <option>Sector Delta</option>
+                                <option>Sector Gamma</option>
+                            </select>
+                            <p id="Error_Ubicacion" class="Error_Sensores" x-show="errores.ubicacion" x-text="errores.ubicacion" role="alert"></p>
+                        </div>
+                        <div class="Campo_Filtro">
+                            <label for="Estado_Sensor">Estado:</label>
+                            <select id="Estado_Sensor" x-model="formulario.estado" required aria-describedby="Error_Estado">
+                                <option value="">Selecciona un estado</option>
+                                <option>Activo</option>
+                                <option>Inactivo</option>
+                                <option>Mantenimiento</option>
+                            </select>
+                            <p id="Error_Estado" class="Error_Sensores" x-show="errores.estado" x-text="errores.estado" role="alert"></p>
+                        </div>
+                    </div>
+                    <div class="Acciones_Filtro">
+                        <button type="submit" x-text="guardando ? 'Guardando...' : 'Guardar cambios'"></button>
+                        <button type="button" class="Boton_De_Editar" @click="cancelarFormulario()">Cancelar</button>
+                    </div>
+                </fieldset>
+            </form>
+        </section>
+        <template x-if="sensorEliminar">
+            <section>
+                <h2>Eliminar sensor</h2>
+                <p>¿Quieres eliminar <strong x-text="sensorEliminar.nombre"></strong>? También se eliminarán sus registros históricos. Esta acción no se puede deshacer.</p>
+                <div class="Acciones_Filtro">
+                    <button type="button" @click="confirmarEliminacion()" :disabled="guardando" x-text="guardando ? 'Eliminando...' : 'Confirmar eliminación'"></button>
+                    <button type="button" class="Boton_De_Editar" @click="cancelarEliminacion()" :disabled="guardando">Cancelar</button>
+                </div>
+            </section>
+        </template>
+        <p class="Error_Sensores" x-show="errorGuardado" x-text="errorGuardado" role="alert" x-cloak></p>
+        <p class="Exito_Sensores" x-show="mensajeExito" x-text="mensajeExito" role="status" x-cloak></p>
         <section id="Sensores">
             <h2>Mis Sensores:</h2>
-            <div class="Tabla_Contenedor">
+            <p x-show="cargando" role="status" x-cloak>Cargando sensores...</p>
+            <div x-show="errorCarga" x-cloak>
+                <p class="Error_Sensores" x-text="errorCarga" role="alert"></p>
+                <button type="button" @click="cargarSensores()" :disabled="guardando">Reintentar</button>
+            </div>
+            <p x-show="!cargando && !errorCarga && sensores.length === 0" x-cloak>No hay sensores para mostrar con los filtros actuales.</p>
+            <div class="Tabla_Contenedor" x-show="!cargando && !errorCarga && sensores.length > 0" x-cloak>
             <table>
                 <thead>
                     <tr>
@@ -139,39 +213,19 @@
                     </tr>
                 </thead>
                 <tbody id="LISTA_DE_SENSORES">
-                    <tr>
-                        <td>S-01</td>
-                        <td>Temperatura</td>
-                        <td>Sector Alpha</td>
-                        <td>Activo</td>
-                        <td>55 °C</td>
-                        <td>
-                            <button type="button" class="Boton_De_Editar">Modificar</button>
-                            <button type="button" class="Boton_De_Eliminar">Eliminar</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>S-02</td>
-                        <td>Humedad</td>
-                        <td>Sector Beta</td>
-                        <td>Inactivo</td>
-                        <td>77%</td>
-                        <td>
-                            <button type="button" class="Boton_De_Editar">Modificar</button>     
-                            <button type="button" class="Boton_De_Eliminar">Eliminar</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>S-03</td>
-                        <td>Luminosidad</td>
-                        <td>Sector Alpha</td>
-                        <td>Mantenimiento</td>
-                        <td>Nivel: 666 </td>
-                        <td>
-                            <button type="button" class="Boton_De_Editar">Modificar</button>
-                            <button type="button" class="Boton_De_Eliminar">Eliminar</button>
-                        </td>
-                    </tr>
+                    <template x-for="Sensor in sensores" :key="Sensor.id">
+                        <tr>
+                            <td x-text="Sensor.nombre"></td>
+                            <td x-text="Sensor.tipo"></td>
+                            <td x-text="Sensor.ubicacion"></td>
+                            <td x-text="Sensor.estado"></td>
+                            <td x-text="Sensor.ultimaMedicion ? Sensor.ultimaMedicion.valor + ' ' + Sensor.unidad : 'Sin mediciones'"></td>
+                            <td>
+                                <button type="button" class="Boton_De_Editar" @click="abrirFormulario(Sensor)" :disabled="guardando">Modificar</button>
+                                <button type="button" class="Boton_De_Eliminar" @click="prepararEliminacion(Sensor)" :disabled="guardando">Eliminar</button>
+                            </td>
+                        </tr>
+                    </template>
                 </tbody>
             </table>
             </div>
