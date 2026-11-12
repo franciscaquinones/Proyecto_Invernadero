@@ -36,3 +36,43 @@ En caso de no funcionar el paso a paso anterior, intentar el siguiente:
 7. Copiar url del apartado "Local" que aparezca al ingresar el comando (ej: "Local: http://localhost:5173" (se debe copiar "http://localhost:5173" en este caso))
 8. Pegar url en navegar preferido y navegar en la página
 9. IMPORTANTE no cerrar la terminal de "Git Bash" mientras se navega en la página. una vez finalizado, se puede cerrar sin problema o presionar Ctrl + C para pararlo.
+
+vistas disponibles:
+
+| Vista | Ruta | Cómo acceder |
+|---|---|---|
+| Inicio de sesión | html/login.html | Al ingresar a la página, en la esquina superior derecha desde el index |
+| Dashboard | html/dashboard.html | Después de iniciar sesión como usuario |
+| Cultivos | html/cultivos.html | Desde el menú de navegación de usuario |
+| Sensores | html/sensores.html | Desde el menú de navegación de usuario |
+| Historial | html/historial.html | Desde el menú de navegación de usuario |
+| Administración | html/admin.html | Después de iniciar sesión como administrador |
+
+
+endpoints:
+
+| Método | Función | Descripción |
+|---|---|---|
+| POST | registrarUsuario | Registra un usuario y crea su invernadero. |
+| POST | iniciarSesion| Verifica las credenciales e inicia sesión. |
+| GET | obtenerSesion | Obtiene los datos de la sesión activa. |
+| POST | cerrarSesion| Cierra la sesión actual. |
+| GET | obtenerPerfil| Consulta el perfil y el invernadero del usuario. |
+| PUT | actualizarPerfil | Actualiza nombre, apellido y correo. |
+| GET | obtenerInvernadero | Consulta un invernadero al que se tenga acceso. |
+| GET | obtenerCultivos | Consulta los cultivos con filtros y ordenamiento. |
+| GET | obtenerCultivo| Consulta un cultivo específico. |
+| POST | crearCultivo| Registra un nuevo cultivo. |
+| PUT | editarCultivo | Modifica un cultivo existente. |
+| DELETE | eliminarCultivo | Elimina un cultivo. |
+| GET | obtenerSensores| Consulta los sensores y sus últimas mediciones. |
+| POST | crearSensor | Registra un nuevo sensor. |
+| PUT | editarSensor | Modifica un sensor existente. |
+| DELETE | eliminarSensor| Elimina un sensor y sus registros. |
+| GET | obtenerRegistros| Consulta los registros según los filtros. |
+| GET | obtenerDatosGrafico | Obtiene los datos para generar un gráfico. |
+| GET | obtenerResumen | Consulta totales, promedios y actividad reciente. |
+| GET | obtenerUsuarios | Consulta y filtra los usuarios registrados. |
+| GET | obtenerRecursosUsuario | Consulta los recursos asociados a un usuario. |
+| DELETE | eliminarUsuario | Elimina una cuenta y sus recursos asociados. |
+| GET | obtenerEstadisticasGlobales | Consulta las estadísticas generales del sistema. |

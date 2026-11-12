@@ -15,6 +15,8 @@ Alpine.data("usuariosAdmin", function() {
         errorRecursos: "",
         confirmando: false,
         eliminando: false,
+        errorEliminacion: "",
+        mensajeExito: "",
         filtros: {
             busqueda: "",
             rol: "",
@@ -60,7 +62,7 @@ Alpine.data("usuariosAdmin", function() {
                 this.estadisticas = Respuesta.data;
             }
             catch {
-                this.errorEstadisticas = "No se pudieron cargar las estadísticas";
+                this.errorEstadisticas = "No se pudieron cargar las estadísticas. Intenta nuevamente.";
             }
             finally {
                 this.cargandoEstadisticas = false;
@@ -68,13 +70,14 @@ Alpine.data("usuariosAdmin", function() {
         },
         async verRecursos(Usuario) {
             if (this.cargandoRecursos || this.eliminando) return;
-            this.usuarioeeleccionado = Usuario;
+            this.usuarioSeleccionado = Usuario;
             this.recursos = null;
             this.confirmando = false;
-            this.erroreliminacion = "";
-            this.mensajeexito = "";
-            this.errorrecursos = "";
-            this.cargandorecursos = true;
+            this.errorEliminacion = "";
+            this.mensajeExito = "";
+            this.errorRecursos = "";
+            this.cargandoRecursos = true;
+
             try {
                 const Respuesta = await obtenerRecursosUsuario(Usuario.id);
                 if (!Respuesta.ok) {
@@ -85,7 +88,7 @@ Alpine.data("usuariosAdmin", function() {
                 this.recursos = Respuesta.data;
             }
             catch {
-                this.errorRecursos = "No se pudieron cargar los recursos";
+                this.errorRecursos = "No se pudieron cargar los recursos. Intenta nuevamente.";
             }
             finally {
                 this.cargandoRecursos = false;
@@ -93,7 +96,7 @@ Alpine.data("usuariosAdmin", function() {
         },
         prepararEliminacion() {
             if (!this.recursos || !this.administradorId || this.eliminando || this.cargando || this.cargandoEstadisticas) return;
-            if (this.recursos.usuario.id === this.administradorid) return;
+            if (this.recursos.usuario.id === this.administradorId) return;
             this.errorEliminacion = "";
             this.confirmando = true;
         },
@@ -123,6 +126,9 @@ Alpine.data("usuariosAdmin", function() {
                 // El borrado ya terminó; cada consulta muestra su propio error si falla.
                 await this.cargarUsuarios();
                 await this.cargarEstadisticas();
+            }
+            catch {
+                this.errorEliminacion = "No se pudo eliminar la cuenta. Intenta nuevamente.";
             }
             finally {
                 this.eliminando = false;
@@ -156,6 +162,9 @@ Alpine.data("usuariosAdmin", function() {
                 }
                 this.usuarios = Respuesta.data;
             }
+            catch {
+                this.errorCarga = "No se pudieron cargar los usuarios. Intenta nuevamente.";
+            }
             finally {
                 this.cargando = false;
             }
@@ -165,7 +174,7 @@ Alpine.data("usuariosAdmin", function() {
                 return;
             }
             this.filtros = {
-                busqeuda: "",
+                busqueda: "",
                 rol: "",
                 estado: ""
             };
