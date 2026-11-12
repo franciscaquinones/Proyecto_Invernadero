@@ -73,6 +73,13 @@ Alpine.data("historialSensores", function() {
                     await this.dibujarGrafico(Respuestas[3].data);
                 }
             }
+            catch {
+                this.borrarGrafico();
+                this.datosGrafico = null;
+                this.registros = [];
+                this.resumen = null;
+                this.errorCarga = "No se pudo cargar el historial. Intenta nuevamente.";
+            }
             finally {
                 this.cargando = false;
             }
@@ -148,3 +155,4 @@ Alpine.data("historialSensores", function() {
         }
     };
 });
+Alpine.start();
