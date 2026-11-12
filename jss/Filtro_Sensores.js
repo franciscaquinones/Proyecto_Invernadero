@@ -110,6 +110,9 @@ Alpine.data("sensoresUsuario", function() {
                 // Conservamos los filtros, aunque el sensor quede fuera de la selección.
                 await this.cargarSensores();
             }
+            catch {
+                this.errorGuardado = "No se pudo guardar el sensor. Intenta nuevamente.";
+            }
             finally {
                 this.guardando = false;
             }
@@ -140,6 +143,9 @@ Alpine.data("sensoresUsuario", function() {
                 this.sensorEliminar = null;
                 this.mensajeExito = "Sensor eliminado correctamente.";
                 await this.cargarSensores();
+            }
+            catch {
+                this.errorGuardado = "No se pudo eliminar el sensor. Intenta nuevamente.";
             }
             finally {
                 this.guardando = false;
