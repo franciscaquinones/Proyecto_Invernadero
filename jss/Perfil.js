@@ -1,26 +1,15 @@
-import Alpine from "alpinejs";
+import Alpine from "https://cdn.jsdelivr.net/npm/alpinejs@3.17.5/dist/module.esm.js";
+import { obtenerPerfil, actualizarPerfil } from "./api.js";
 
 Alpine.data("perfilUsuario", function () {
 
     return {
 
         editando: false,
-        usuario: 
-        {
-            id: "User_001",
-            nombre: "Jill",
-            apellido: "Valentine",
-            correo: "jill@umbrellabotanics.try",
-            rol: "usuario",
-            estado: "Activo"
-        },
-
-        instalacion: {
-            id: "INV-001",
-            nombre: "Instalación Alpha",
-            ubicacion: "Montañas Arklay",
-            estado: "Operativo"
-        },
+        usuario: null,
+        instalacion: null,
+        cargando: true,
+        errorCarga: "",
 
         formulario: {
             nombre: "",
@@ -35,6 +24,31 @@ Alpine.data("perfilUsuario", function () {
         },
 
         mensajeExito: "",
+        guardando: false,
+        errorGuardado: "",
+        async cargarPerfil() {
+            this.cargando = true;
+            this.errorCarga = "";
+            try {
+                const Respuesta = await obtenerPerfil();
+                if (!Respuesta.ok) {
+                    if (Respuesta.status === 401 || Respuesta.status === 403) {
+                        window.location.replace("login.html");
+                        return;
+                    }
+                    this.errorCarga = Respuesta.error;
+                    return;
+                }
+                this.usuario = Respuesta.data.usuario;
+                this.instalacion = Respuesta.data.invernadero;
+            }
+            catch {
+                this.errorCarga = "No se pudo cargar el perfil. Intenta nuevamente.";
+            }
+            finally {
+                this.cargando = false;
+            }
+        },
 
         iniciarEdicion() {
 
@@ -45,6 +59,7 @@ Alpine.data("perfilUsuario", function () {
             };
 
             this.mensajeExito = "";
+            this.errorGuardado = "";
 
             this.formulario = {
                 nombre: this.usuario.nombre,
@@ -65,6 +80,7 @@ Alpine.data("perfilUsuario", function () {
             };
 
             this.mensajeExito = "";
+            this.errorGuardado = "";
 
             this.editando = false;
 
@@ -76,7 +92,9 @@ Alpine.data("perfilUsuario", function () {
 
         },
 
-        guardarPerfil() {
+        async guardarPerfil() {
+            if (this.guardando) {return;}
+            this.errorGuardado = "";
 
             const Nombre = this.formulario.nombre.trim();
             const Apellido = this.formulario.apellido.trim();
@@ -113,14 +131,41 @@ Alpine.data("perfilUsuario", function () {
                 return;
             }
 
-            this.usuario.nombre = Nombre;
-            this.usuario.apellido = Apellido;
-            this.usuario.correo = Correo;
+            this.guardando = true;
+            try {
+                const Respuesta = await actualizarPerfil({
+                    nombre: Nombre, apellido: Apellido, correo: Correo
+                });
+                if (!Respuesta.ok) {
+                    if (Respuesta.status === 401 || Respuesta.status === 403) {
+                        window.location.replace("login.html");
+                        return;
+                    }
+                    if (Respuesta.status === 409) {
+                        this.errores.correo = Respuesta.error;
+                    }
+                    else {
+                        this.errorGuardado = Respuesta.error;
+                    }
+                    return;
 
-            this.editando = false;
+                }
+                this.usuario = Respuesta.data;
+                this.editando = false;
+                this.mensajeExito = "Perfil actualizado correctamente.";
 
-            this.mensajeExito =
-                "Perfil actualizado en esta vista. Los cambios se perderán al recargar.";
+                const EnlacesPerfil = document.querySelectorAll("[data-nombre-usuario]");
+
+                EnlacesPerfil.forEach(function(Enlace) {
+                    Enlace.textContent = Respuesta.data.nombre + " " + Respuesta.data.apellido;
+                });
+            }
+            catch {
+                this.errorGuardado = "No se pudieron guardar los cambios. Intenta nuevamente.";
+            }
+            finally {
+                this.guardando = false;
+            }
 
         }
 
