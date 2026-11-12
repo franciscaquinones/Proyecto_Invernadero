@@ -6,16 +6,16 @@
     <link rel="shortcut icon" href="../imgs/Logo_Pub.png">
     <link rel="stylesheet" href="../csss/Estilo_Interno.css">
     <link rel="stylesheet" href="../csss/Cultivos.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script> <!-- agregamos el alphine -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="../jss/Filtro_Cultivos.js" defer></script>
+    <script type="module" src="../jss/main.js"></script>
+    <script type="module" src="../jss/Filtro_Cultivos.js"></script>
     <title>
         Cultivos - Umbrella Corps Botanics
     </title>
     <!-- Autores: Francisca Quiñones y Oscar Oviedo -->
     <!-- Proyecto Arklay Botanics -->
 </head>
-<body>
+<body data-rol="usuario">
 
     <header>
 
@@ -29,10 +29,10 @@
         <table>
             <tr>
                 <td>
-                    Usuario
+                    <a href="perfil.html" data-nombre-usuario>Usuario</a>
                 </td>
                 <td>
-                    <a href="login.html">
+                    <a href="login.html" data-cerrar-sesion>
                         Cerrar Sesión
                     </a>
                 </td>
@@ -41,6 +41,8 @@
 
     </header>
 
+    <p id="Mensaje_Sesion" role="status"></p>
+    <button type="button" id="Reintentar_Sesion" hidden>Reintentar</button>
     <nav>
 
         <a href="dashboard.html">
@@ -58,7 +60,7 @@
 
     </nav>
 
-    <main>
+    <main hidden x-data="cultivosUsuario" x-init="cargarCultivos()">
 
         <section>
             <h2>Vista y Administración de Cultivos</h2>
@@ -70,20 +72,20 @@
             <h2>Busqueda de cultivos:</h2>
                     <div class="Campo_Filtro">
                         <label for="Busqueda">Nombre del cultivo:</label>
-                        <input type="text" id="Busqueda" placeholder="Ej: Uroboros">
+                        <input type="text" id="Busqueda" placeholder="Ej: Uroboros" x-model="filtros.busqueda" @input.debounce.300ms="cargarCultivos()" :disabled="guardando">
                     </div>
             <div x-data="{abierto:false}">
                 <h2>
-                    <button type="button" @click="abierto =!abierto">
+                    <button type="button" class="Boton_Desplegar_Filtros" @click="abierto =!abierto" :aria-expanded="abierto" aria-controls="Panel_Filtros_Cultivos">
                         Filtrar cultivos
                     </button> 
                 </h2>
-                <div x-show="abierto" x-transition>
-            <form id="Formulario_Filtros">
-                <div class="Campo_Filtro">
+                <div id="Panel_Filtros_Cultivos" x-show="abierto" x-transition x-cloak>
+            <form id="Formulario_Filtros" @submit.prevent="cargarCultivos()">
+                <div class="Campos_Filtro">
                     <div class="Campo_Filtro">
                         <label for="Tipo">Tipo:</label>
-                        <select id="Tipo">
+                        <select id="Tipo" x-model="filtros.tipo" :disabled="guardando">
                             <option value="Todos">Todos</option>
                             <option value="Virus">Virus</option>
                             <option value="Biológico">Biológico</option>
@@ -93,7 +95,7 @@
                     </div>
                     <div class="Campo_Filtro">
                         <label for="Fase">Estado:</label>
-                        <select id="Fase">
+                        <select id="Fase" x-model="filtros.estado" :disabled="guardando">
                             <option value="Todos">Todos</option>
                             <option value="Activo">Activo</option>
                             <option value="En Desarrollo">En desarrollo</option>
@@ -103,34 +105,104 @@
                     </div>
                     <div class="Campo_Filtro">
                         <label for="Orden">Ordenar:</label>
-                        <select id="Orden">
-                            <option value="Nombre_Asc">Nombre A-Z</option>
-                            <option value="Nombre_Des">Nombre Z-A </option>
+                        <select id="Orden" x-model="filtros.orden" @change="cargarCultivos()" :disabled="guardando">
+                            <option value="Original">Orden original</option>
+                            <option value="Nombre_ASC">Nombre A-Z</option>
+                            <option value="Nombre_DESC">Nombre Z-A </option>
                         </select>
                     </div>
                 </div>
                 <div class="Acciones_Filtro">
-                    <button type="submit" id="Boton_De_Filtro">
+                    <button type="submit" id="Boton_De_Filtro" :disabled="guardando">
                         Aplicar filtros
                     </button>
-                    <button type="button" id="Boton_De_Limpiar">
+                    <button type="button" id="Boton_De_Limpiar_Filtros" @click="limpiarFiltros()" :disabled="guardando">
                         Limpiar filtros
                     </button>
                 </div>
             </form>
          </div>
         </div>
-            <button type="button" id="Boton_De_Agregar">
+            <button type="button" id="Boton_De_Agregar" @click="abrirFormulario()" :disabled="guardando">
                 Agregar nuevo cultivo
             </button>
         </section>
+        <section x-show="formularioAbierto" x-cloak>
+            <h2 x-text="editandoId ? 'Modificar cultivo' : 'Agregar cultivo'"></h2>
+            <form @submit.prevent="guardarCultivo()" novalidate>
+                <fieldset :disabled="guardando">
+                    <legend>Datos del cultivo</legend>
+                    <div class="Campos_Filtro">
+                        <div class="Campo_Filtro">
+                            <label for="Nombre_Cultivo">Nombre:</label>
+                            <input id="Nombre_Cultivo" type="text" x-model="formulario.nombre" maxlength="120" required aria-describedby="Error_Nombre">
+                            <p id="Error_Nombre" class="Error_Cultivos" x-show="errores.nombre" x-text="errores.nombre" role="alert"></p>
+                        </div>
+                        <div class="Campo_Filtro">
+                            <label for="Tipo_Cultivo">Tipo:</label>
+                            <select id="Tipo_Cultivo" x-model="formulario.tipo" required aria-describedby="Error_Tipo">
+                                <option value="">Selecciona un tipo</option>
+                                <option>Virus</option>
+                                <option>Biológico</option>
+                                <option>Parásito</option>
+                                <option>Hongo</option>
+                            </select>
+                            <p id="Error_Tipo" class="Error_Cultivos" x-show="errores.tipo" x-text="errores.tipo" role="alert"></p>
+                        </div>
+                        <div class="Campo_Filtro">
+                            <label for="Estado_Cultivo">Estado:</label>
+                            <select id="Estado_Cultivo" x-model="formulario.estado" required aria-describedby="Error_Estado">
+                                <option value="">Selecciona un estado</option>
+                                <option>Activo</option>
+                                <option>En Desarrollo</option>
+                                <option>Experimental</option>
+                                <option>Finalizado</option>
+                            </select>
+                            <p id="Error_Estado" class="Error_Cultivos" x-show="errores.estado" x-text="errores.estado" role="alert"></p>
+                        </div>
+                        <div class="Campo_Filtro">
+                            <label for="Nivel_Cultivo">Nivel de cuarentena:</label>
+                            <input id="Nivel_Cultivo" type="number" x-model="formulario.nivelCuarentena" min="0" max="10" step="1" required aria-describedby="Error_Nivel">
+                            <p id="Error_Nivel" class="Error_Cultivos" x-show="errores.nivelCuarentena" x-text="errores.nivelCuarentena" role="alert"></p>
+                        </div>
+                        <div class="Campo_Filtro">
+                            <label for="Fecha_Cultivo">Fecha de incubación:</label>
+                            <input id="Fecha_Cultivo" type="date" x-model="formulario.fechaIncubacion" required aria-describedby="Error_Fecha">
+                            <p id="Error_Fecha" class="Error_Cultivos" x-show="errores.fechaIncubacion" x-text="errores.fechaIncubacion" role="alert"></p>
+                        </div>
+                    </div>
+                    <div class="Acciones_Filtro">
+                        <button type="submit" x-text="guardando ? 'Guardando...' : 'Guardar cambios'"></button>
+                        <button type="button" class="Boton_De_Editar" @click="cancelarFormulario()">Cancelar</button>
+                    </div>
+                </fieldset>
+            </form>
+        </section>
+        <template x-if="cultivoEliminar">
+            <section>
+                <h2>Eliminar cultivo</h2>
+                <p>¿Quieres eliminar <strong x-text="cultivoEliminar.nombre"></strong>? Esta acción no se puede deshacer.</p>
+                <div class="Acciones_Filtro">
+                    <button type="button" @click="confirmarEliminacion()" :disabled="guardando" x-text="guardando ? 'Eliminando...' : 'Confirmar eliminación'"></button>
+                    <button type="button" class="Boton_De_Editar" @click="cancelarEliminacion()" :disabled="guardando">Cancelar</button>
+                </div>
+            </section>
+        </template>
+        <p class="Error_Cultivos" x-show="errorGuardado" x-text="errorGuardado" role="alert" x-cloak></p>
+        <p class="Exito_Cultivos" x-show="mensajeExito" x-text="mensajeExito" role="status" x-cloak></p>
 
         <section id="Cultivos">
 
             <h2>Mis Cultivos:</h2>
+            <p x-show="cargando" role="status" x-cloak>Cargando cultivos...</p>
+            <div x-show="errorCarga" x-cloak>
+                <p class="Error_Cultivos" x-text="errorCarga" role="alert"></p>
+                <button type="button" @click="cargarCultivos()" :disabled="guardando">Reintentar</button>
+            </div>
+            <p x-show="!cargando && !errorCarga && cultivos.length === 0" x-cloak>No hay cultivos para mostrar con los filtros actuales.</p>
 
             <!-- [IA] inicio · ia/2026-10-26_oscaroviedo-png_vista-tabla-cultivos.md -->
-            <div class="Tabla_Contenedor">
+            <div class="Tabla_Contenedor" x-show="!cargando && !errorCarga && cultivos.length > 0" x-cloak>
             <!-- [IA] fin -->
 
             <table>
@@ -147,43 +219,19 @@
                 </thead>
 
                 <tbody id="LISTA_DE_CULTIVOS">
-
-                    <tr>
-                        <td>Uroboros</td>
-                        <td>Virus</td>
-                        <td>Activo</td>
-                        <td>8/10</td>
-                        <td>07/10/2020</td>
-                        <td>
-                            <button type="button" class="Boton_De_Editar">Modificar</button>
-                            <button type="button" class="Boton_De_Eliminar">Purgar</button>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Progenitor</td>
-                        <td>Virus</td>
-                        <td>Finalizado</td>
-                        <td>5/10</td>
-                        <td>27/09/1996</td>
-                        <td>
-                            <button type="button" class="Boton_De_Editar">Modificar</button>
-                            <button type="button" class="Boton_De_Eliminar">Purgar</button>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Licker Alpha</td>
-                        <td>Biológico</td>
-                        <td>Experimental</td>
-                        <td>9/10</td>
-                        <td>05/12/2023</td>
-                        <td>
-                            <button type="button" class="Boton_De_Editar">Modificar</button>
-                            <button type="button" class="Boton_De_Eliminar">Purgar</button>
-                        </td>
-                    </tr>
-
+                    <template x-for="Cultivo in cultivos" :key="Cultivo.id">
+                        <tr>
+                            <td x-text="Cultivo.nombre"></td>
+                            <td x-text="Cultivo.tipo"></td>
+                            <td x-text="Cultivo.estado"></td>
+                            <td x-text="Cultivo.nivelCuarentena + '/10'"></td>
+                            <td x-text="Cultivo.fechaIncubacion.split('-').reverse().join('/')"></td>
+                            <td>
+                                <button type="button" class="Boton_De_Editar" @click="abrirFormulario(Cultivo)" :disabled="guardando">Modificar</button>
+                                <button type="button" class="Boton_De_Eliminar" @click="prepararEliminacion(Cultivo)" :disabled="guardando">Purgar</button>
+                            </td>
+                        </tr>
+                    </template>
                 </tbody>
 
             </table>
