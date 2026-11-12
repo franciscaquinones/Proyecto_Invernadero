@@ -13,3 +13,7 @@ de este proyecto (Arklay Botanics / Umbrella Corps Botanics).
 | 2026-10-26 | @oscaroviedo-png | ChatGPT (GPT-6) | Adaptación de la tabla de cultivos | [Ver registro](2026-10-26_oscaroviedo-png_vista-tabla-cultivos.md) |
 | 2026-11-11 | @oscaroviedo-png | ChatGPT (GPT-6) | Validación y carga de archivos JS | [Ver registro](2026-11-11_oscaroviedo-png_validacion-carga-json.md) |
 | 2026-11-11 | @oscaroviedo-png | ChatGPT (GPT-6) | Cola de operaciones con promesas en JS | [Ver registro](2026-11-11_oscaroviedo-png_cola-operaciones.md) |
+| 2026-11-06 | franciscaquiñones | ChatGPT (GPT-6) | configuracion de alpine | [Ver registro](2026-11-06_franciscaquiñones-configurar-alpine.md) |
+| 2026-11-06 | franciscaquiñones | ChatGPT (GPT-6) | Consulta menu desplegable | [Ver registro](2026-11-06_franciscaquiñones-consulta-menu-desplegable.md) |
+| 2026-11-06 | franciscaquiñones | ChatGPT (GPT-6) | vistas del proyecto con la api | [Ver registro](2026-11-06_franciscaquiñones-vistas-del-proyecto-con-la-api.md) |
+| 2026-11-12 | franciscaquiñones | ChatGPT (GPT-6) | consulta sobre readme | [Ver registro](2026-11-06_franciscaquiñones-consulta-sobre-readme.md) |

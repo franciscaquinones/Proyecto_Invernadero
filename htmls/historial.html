@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="../csss/Estilo_Interno.css">
     <link rel="stylesheet" href="../csss/Historial.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="../jss/main.js" defer></script>
+    <script type="module" src="../jss/main.js"></script>
+    <script type="module" src="../jss/Historial.js"></script>
     <title>
         Historial - Umbrella Corps Botanics
     </title>
@@ -28,12 +29,12 @@
         <table>
             <tr>
                 <td>
-                    <a href="perfil.html">
+                    <a href="perfil.html" data-nombre-usuario>
                         Usuario
                     </a>
                 </td>
                 <td>
-                    <a href="login.html">
+                    <a href="login.html" data-cerrar-sesion>
                         Cerrar Sesión
                     </a>
                 </td>
@@ -41,6 +42,9 @@
         </table>
 
     </header>
+
+    <p id="Mensaje_Sesion" role="status"></p>
+    <button type="button" id="Reintentar_Sesion" hidden>Reintentar</button>
 
     <nav>
 
@@ -59,7 +63,7 @@
 
     </nav>
 
-    <main>
+    <main hidden x-data="historialSensores" x-init="cargarHistorial()">
 
         <section>
 
@@ -72,82 +76,100 @@
 
 
         <section>
+            <h2>Filtrar mediciones:</h2>
 
-            <h2>Resumen de Mediciones:</h2>
+            <form @submit.prevent="cargarHistorial()">
+                <fieldset class="Filtros_Historial" :disabled="cargando">
+                    <legend>Sensor y período</legend>
 
-            <div class="Tarjetas_Resumen">
-            <p>
-                Registros realizados: <strong>12</strong>
-            </p>
-            <p>
-                Temperatura promedio: <strong>25.3 °C</strong>
-            </p>
-            <p>
-                Humedad promedio: <strong>71 %</strong>
-            </p>
-            <p>
-                Luminosidad promedio: <strong>Nivel 734</strong>
-            </p>
-            </div>
+                    <div class="Campos_Filtro_Historial">
 
+                        <div>
+                            <label for="Sensor_Historial">Sensor:</label>
+                            <select id="Sensor_Historial" x-model="filtros.sensorId">
+                                <option value="">Todos los sensores</option>
+                                <template x-for="Sensor in sensores" :key="Sensor.id">
+                                    <option :value="Sensor.id" x-text="Sensor.nombre + ' · ' + Sensor.tipo"></option>
+                                </template>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="Desde_Historial">Desde:</label>
+                            <input type="date" id="Desde_Historial" x-model="filtros.desde">
+                        </div>
+
+                        <div>
+                            <label for="Hasta_Historial">Hasta:</label>
+                            <input type="date" id="Hasta_Historial" x-model="filtros.hasta">
+                        </div>
+
+                    </div>
+
+                    <div class="Acciones_Filtro_Historial">
+                        <button type="submit" class="Boton_Reintentar">Aplicar filtros</button>
+                        <button type="button" id="Boton_De_Limpiar_Filtros_Historial" class="Boton_Reintentar" @click="limpiarFiltros()">Limpiar filtros</button>
+                    </div>
+
+                </fieldset>
+            </form>
         </section>
+
+        <template x-if="resumen">
+            <section>
+
+                <h2>Resumen de Mediciones:</h2>
+
+                <div class="Tarjetas_Resumen">
+                    <p>Registros realizados: <strong x-text="resumen.totalRegistros"></strong></p>
+                    <p>Temperatura promedio: <strong x-text="mostrarPromedio('Temperatura')"></strong></p>
+                    <p>Humedad promedio: <strong x-text="mostrarPromedio('Humedad')"></strong></p>
+                    <p>Luminosidad promedio: <strong x-text="mostrarPromedio('Luminosidad')"></strong></p>
+                </div>
+
+            </section>
+        </template>
 
 
         <section id="Registro_Historial">
 
             <h2>Registro de Mediciones:</h2>
-            <div class="Tabla_Contenedor">
+
+            <p x-show="cargando" role="status">Cargando mediciones...</p>
+            <p class="Error_Historial" x-show="errorCarga" x-text="errorCarga" role="alert" x-cloak></p>
+
+            <button type="button" class="Boton_Reintentar" x-show="errorCarga && !cargando" @click="cargarHistorial()" x-cloak>
+                Reintentar
+            </button>
+            <p x-show="!cargando && !errorCarga && registros.length === 0" x-cloak>
+                No hay mediciones para la selección actual.
+            </p>
+            <div class="Tabla_Contenedor" x-show="!cargando && !errorCarga && registros.length > 0" x-cloak role="region" aria-label="Mediciones de sensores" tabindex="0">
             <table>
                 <thead>
                     <tr>
-                        <th>Fecha</th>
-                        <th>Hora</th>
-                        <th>Sensor</th>
-                        <th>Tipo</th>
-                        <th>Ubicación</th>
-                        <th>Medición</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Hora</th>
+                        <th scope="col">Sensor</th>
+                        <th scope="col">Tipo</th>
+                        <th scope="col">Ubicación</th>
+                        <th scope="col">Medición</th>
                     </tr>
 
                 </thead>
 
 
                 <tbody>
-                    <tr>
-                        <td>22/09/2026</td>
-                        <td>08:00</td>
-                        <td>S-01</td>
-                        <td>Temperatura</td>
-                        <td>Sector Alpha</td>
-                        <td>24.8 °C</td>
-                    </tr>
-
-                    <tr>
-                        <td>22/09/2026</td>
-                        <td>08:05</td>
-                        <td>S-02</td>
-                        <td>Humedad</td>
-                        <td>Sector Beta</td>
-                        <td>74 %</td>
-                    </tr>
-
-                    <tr>
-                        <td>22/09/2026</td>
-                        <td>08:10</td>
-                        <td>S-03</td>
-                        <td>Luminosidad</td>
-                        <td>Sector Alpha</td>
-                        <td>Nivel: 698</td>
-                    </tr>
-
-                    <tr>
-                        <td>23/09/2026</td>
-                        <td>12:00</td>
-                        <td>S-01</td>
-                        <td>Temperatura</td>
-                        <td>Sector Alpha</td>
-                        <td>26.1 °C</td>
-                    </tr>
-
+                    <template x-for="Registro in registros" :key="Registro.id">
+                        <tr>
+                            <td x-text="Registro.fecha.split('-').reverse().join('/')"></td>
+                            <td x-text="Registro.hora"></td>
+                            <td x-text="Registro.sensor"></td>
+                            <td x-text="Registro.tipo"></td>
+                            <td x-text="Registro.ubicacion"></td>
+                            <td x-text="Registro.valor + ' ' + Registro.unidad"></td>
+                        </tr>
+                    </template>
                 </tbody>
 
             </table>
@@ -156,13 +178,30 @@
         </section>
 
 
-        <section>
+        <section id="Grafico_Historial">
 
-            <h2>Gráficos de Sensores:</h2>
+            <h2>Gráfico de Mediciones:</h2>
 
-            <p>
-                Aquí irán los gráficos de las mediciones registradas por los sensores.
+            <p>El gráfico corresponde a los últimos filtros aplicados. Los valores también están disponibles en la tabla.</p>
+
+            <p x-show="cargando" role="status">Cargando gráfico...</p>
+            <p x-show="!cargando && errorCarga" x-cloak>El gráfico no está disponible. Revisa el mensaje de error y usa Reintentar.</p>
+
+            <p x-show="!cargando && !errorCarga && !datosGrafico" x-cloak>
+                Selecciona un sensor y pulsa Aplicar filtros para ver sus mediciones.
             </p>
+
+            <p x-show="!cargando && !errorCarga && datosGrafico && datosGrafico.valores.length === 0" x-cloak>
+                No hay mediciones de este sensor para el período seleccionado.
+            </p>
+
+            <h3 x-show="datosGrafico" x-text="datosGrafico ? datosGrafico.sensor.nombre + ' · ' + datosGrafico.sensor.tipo : ''" x-cloak></h3>
+
+            <div class="Grafico_Contenedor" x-show="datosGrafico && datosGrafico.valores.length > 0" x-cloak>
+                <canvas x-ref="GraficoHistorial" role="img" :aria-label="datosGrafico ? 'Mediciones de ' + datosGrafico.sensor.nombre + ' en ' + datosGrafico.unidad + '. Consulta los valores en la tabla.' : 'Gráfico de mediciones'">
+                    Consulta las mediciones en la tabla de esta página.
+                </canvas>
+            </div>
 
         </section>
 

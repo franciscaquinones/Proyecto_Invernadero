@@ -7,14 +7,15 @@
     <link rel="stylesheet" href="../csss/Estilo_Interno.css">
     <link rel="stylesheet" href="../csss/Dashboard.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="../jss/main.js" defer></script>
+    <script type="module" src="../jss/Dashboard.js"></script>
+    <script type="module" src="../jss/main.js"></script>
     <title>
         Inicio - Umbrella Corps Botanics
     </title>
     <!-- Autores: Francisca Quiñones y Oscar Oviedo -->
     <!-- Proyecto Arklay Botanics -->
 </head>
-<body>
+<body data-rol="usuario">
 
     <header>
 
@@ -28,12 +29,12 @@
         <table>
             <tr>
                 <td>
-                    <a href="perfil.html">
+                    <a href="perfil.html" data-nombre-usuario>
                         Usuario
                     </a>
                 </td>
                 <td>
-                    <a href="login.html">
+                    <a href="login.html" data-cerrar-sesion>
                         Cerrar Sesión
                     </a>
                 </td>
@@ -41,7 +42,8 @@
         </table>
 
     </header>
-
+    <p id="Mensaje_Sesion" role="status"></p>
+    <button type="button" id="Reintentar_Sesion" hidden>Reintentar</button>
     <nav>
 
         <a href="dashboard.html" id="Activo">
@@ -59,59 +61,68 @@
 
     </nav>
 
-    <main>
+    <main hidden x-data="resumenDashboard" x-init="cargarResumen()">
 
         <section id="Resumen">
 
             <h2>Bienvenido al Panel Principal:</h2>
-            
 
-            <article>
-                <h3>Cantidad Total de Cultivos</h3>
-                <p>25</p> <!-- Numeros ficticios, en las siguientes entregas irán números reales -->
-            </article>
-
-            <article>
-                <h3>Cantidad Total de Sensores</h3>
-                <p>80</p> <!-- Numeros ficticios, en las siguientes entregas irán números reales -->
-            </article>
-
-            <article>
-                <h3>Cantidad Total de Registros</h3>
-                <p>777</p> <!-- Numeros ficticios, en las siguientes entregas irán números reales -->
-            </article>
-
+            <div class="Estado_Resumen" x-show="cargando || errorCarga">
+                <p x-show="cargando" role="status">Cargando resumen...</p>
+                <p x-show="errorCarga" x-text="errorCarga" role="alert" x-cloak></p>
+                <button type="button" x-show="errorCarga && !cargando" @click="cargarResumen()" x-cloak>
+                    Reintentar
+                </button>
+            </div>
+            <template x-if="resumen">
+                <article>
+                    <h3>Cantidad Total de Cultivos</h3>
+                    <p x-text="resumen.totalCultivos"></p>
+                </article>
+            </template>
+            <template x-if="resumen">
+                <article>
+                    <h3>Cantidad Total de Sensores</h3>
+                    <p x-text="resumen.totalSensores"></p>
+                </article>
+            </template>
+            <template x-if="resumen">
+                <article>
+                    <h3>Cantidad Total de Registros</h3>
+                    <p x-text="resumen.totalRegistros"></p>
+                </article>
+            </template>
+            <template x-if="resumen">
+                <p class="Estado_Resumen" x-show="resumen.totalCultivos === 0 && resumen.totalSensores === 0 && resumen.totalRegistros === 0">
+                    Tu invernadero todavía no tiene cultivos, sensores ni registros.
+                </p>
+            </template>
         </section>
-
         <br>
         <br>
+        <template x-if="resumen">
+            <section id="Actividad">
 
-        <section id="Actividad">
-
-            <h2>Actividad Reciente</h2>
-
-
-            <ul>
-
-                <li>
-                    Sensor de temperatura: 77°C <!-- Numeros ficticios, en las siguientes entregas irán números reales -->
-                </li>
-
-                <li>
-                    Humedad registrada: 66% <!-- Numeros ficticios, en las siguientes entregas irán números reales -->
-                </li>
-
-                <li>
-                    El cultivo "Virus G" ha sido agregado al sistema. <!-- Numeros ficticios, en las siguientes entregas irán números reales -->
-                </li>
-            </ul>
-
-        </section>
-
+                <h2>Actividad Reciente</h2>
+                <p>Últimas mediciones registradas por tus sensores.</p>
+                <p x-show="resumen.actividadReciente.length === 0">
+                    Todavía no tienes mediciones registradas.
+                </p>
+                <ul>
+                    <template x-for="Registro in resumen.actividadReciente" :key="Registro.id">
+                        <li>
+                            <strong x-text="'Sensor ' + Registro.sensorId"></strong>
+                            <span> · Medición registrada el </span>
+                            <span x-text="Registro.fecha"></span>
+                            <span> a las </span>
+                            <span x-text="Registro.hora"></span>
+                        </li>
+                    </template>
+                </ul>
+                <a href="historial.html" class="Boton_Historial">Consultar historial</a>
+            </section>
+        </template>
     </main>
-
-
-
     <hr>
     <footer>
 

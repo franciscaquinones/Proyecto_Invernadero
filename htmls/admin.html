@@ -6,12 +6,13 @@
     <link rel="stylesheet" href="../csss/Estilo_Interno.css">
     <link rel="stylesheet" href="../csss/Admin.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="../jss/main.js" defer></script>
+    <script type="module" src="../jss/main.js"></script>
+    <script type="module" src="../jss/Admin.js"></script>
     <title>
         Panel De Administrador
     </title>
 </head>
-<body>
+<body data-rol="administrador">
     <header>
 
         <div id="Logo">
@@ -24,10 +25,12 @@
         <table>
             <tr>
                 <td>
-                    Administrador
+                        <a href="perfil.html" data-nombre-usuario id="Activo">
+                        Administrador
+                    </a>
                 </td>
                 <td>
-                    <a href="login.html">
+                    <a href="login.html" data-cerrar-sesion>
                         Cerrar Sesión
                     </a>
                 </td>
@@ -35,6 +38,8 @@
         </table>
 
     </header>
+    <p id="Mensaje_Sesion" role="status"></p>
+    <button type="button" id="Reintentar_Sesion" hidden>Reintentar</button>
     <nav>
         <a href="admin.html" id="Activo">
             Panel Administrativo
@@ -46,10 +51,10 @@
             Usuarios Registrados
         </a>
         <a href="#Cuentas">
-            Admministración de Cuentas
+            Administración de Cuentas
         </a>
     </nav>
-    <main>
+    <main hidden x-data="usuariosAdmin" x-init="cargarPanel()" x-cloak>
         <section>
             <h2>
                 Panel de Administrador
@@ -66,24 +71,41 @@
 
             <h2>Estadísticas Globales</h2>
 
+            <p x-show="cargandoEstadisticas" role="status">Cargando estadísticas...</p>
+            <p class="Error_Admin" x-show="errorEstadisticas" x-text="errorEstadisticas" role="alert"></p>
+            <button type="button" class="Boton_Admin" x-show="errorEstadisticas" :disabled="cargandoEstadisticas || eliminando" @click="cargarEstadisticas()">Reintentar estadísticas</button>
+            <template x-if="estadisticas">
             <div class="Tarjetas_Admin">
 
                 <article class="Tarjeta_Estadistica">
                     <h3>Usuarios registrados</h3>
-                    <p>15</p>
+                    <p x-text="estadisticas.totalUsuarios"></p>
                 </article>
 
                 <article class="Tarjeta_Estadistica">
                     <h3>Cultivos registrados</h3>
-                <p>60</p>
+                    <p x-text="estadisticas.totalCultivos"></p>
                 </article>
 
                 <article class="Tarjeta_Estadistica">
                     <h3>Sensores registrados</h3>
-                    <p>120</p>
-             </article>
+                    <p x-text="estadisticas.totalSensores"></p>
+                </article>
+                <article class="Tarjeta_Estadistica">
+                    <h3>Usuarios activos</h3>
+                    <p x-text="estadisticas.usuariosActivos"></p>
+                </article>
+                <article class="Tarjeta_Estadistica">
+                    <h3>Invernaderos registrados</h3>
+                    <p x-text="estadisticas.totalInvernaderos"></p>
+                </article>
+                <article class="Tarjeta_Estadistica">
+                    <h3>Mediciones registradas</h3>
+                    <p x-text="estadisticas.totalRegistros"></p>
+                </article>
 
             </div>
+            </template>
 
         </section>
 
@@ -91,37 +113,144 @@
             <h2>
                 Usuarios Registrados
             </h2>
-            <div class="Tabla_Contenedor">
-            <table>
-                <tr>
-                    <th>
-                        Nombre
-                    </th>
-                    <th>
-                        Correo
-                    </th>
-                </tr>
-                <tr>
-                    <td>
-                        Oscar Oviedo
-                    </td>
-                    <td>
-                        ejemplo@oscar.com
-                    </td>
-                </tr>
-            </table>
+
+            <form @submit.prevent="cargarUsuarios()">
+                <fieldset class="Filtros_Admin" :disabled="cargando || eliminando">
+                    <legend>Filtrar usuarios</legend>
+
+                    <div class="Campos_Filtro_Admin">
+                        <div>
+                            <label for="Busqueda_Usuarios">Nombre o correo:</label>
+                            <input type="search" id="Busqueda_Usuarios" x-model="filtros.busqueda" placeholder="Buscar usuario">
+                        </div>
+                        <div>
+                            <label for="Rol_Usuarios">Rol:</label>
+                            <select id="Rol_Usuarios" x-model="filtros.rol">
+                                <option value="">Todos</option>
+                                <option value="usuario">Usuario</option>
+                                <option value="administrador">Administrador</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="Estado_Usuarios">Estado:</label>
+                            <select id="Estado_Usuarios" x-model="filtros.estado">
+                                <option value="">Todos</option>
+                                <option value="Activo">Activo</option>
+                                <option value="Inactivo">Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="Acciones_Filtro_Admin">
+                        <button type="submit" class="Boton_Admin">Aplicar filtros</button>
+                        <button type="button" id="Limpiar_Filtros_Admin" class="Boton_Admin" @click="limpiarFiltros()">Limpiar filtros</button>
+                    </div>
+                </fieldset>
+            </form>
+            <p x-show="cargando" role="status">Cargando usuarios...</p>
+            <p class="Error_Admin" x-show="errorCarga" x-text="errorCarga" role="alert"></p>
+            <button type="button" class="Boton_Admin" x-show="errorCarga && !cargando" :disabled="eliminando" @click="cargarUsuarios()">Reintentar</button>
+            <p x-show="!cargando && !errorCarga && usuarios.length === 0" role="status">No hay usuarios que coincidan con los filtros.</p>
+            <div class="Tabla_Contenedor" x-show="!cargando && !errorCarga && usuarios.length > 0" tabindex="0">
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Correo</th>
+                            <th scope="col">Rol</th>
+                            <th scope="col">Estado</th>
+                            <th scope="col">Recursos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="Usuario in usuarios" :key="Usuario.id">
+                            <tr>
+                                <td x-text="Usuario.nombre + ' ' + Usuario.apellido"></td>
+                                <td x-text="Usuario.correo"></td>
+                                <td x-text="Usuario.rol === 'administrador' ? 'Administrador' : 'Usuario'"></td>
+                                <td x-text="Usuario.estado"></td>
+                                <td><button type="button" class="Boton_Admin" :disabled="cargandoRecursos || eliminando" @click="verRecursos(Usuario)">Ver recursos</button></td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
             </div>
         </section>
-        
+
+        <section id="Recursos" x-show="usuarioSeleccionado">
+            <h2>Recursos del usuario</h2>
+            <p x-text="usuarioSeleccionado ? usuarioSeleccionado.nombre + ' ' + usuarioSeleccionado.apellido + ' · ' + usuarioSeleccionado.correo : ''"></p>
+            <p x-show="cargandoRecursos" role="status">Cargando recursos...</p>
+            <p class="Error_Admin" x-show="errorRecursos" x-text="errorRecursos" role="alert"></p>
+            <button type="button" class="Boton_Admin" x-show="errorRecursos" :disabled="cargandoRecursos || eliminando" @click="verRecursos(usuarioSeleccionado)">Reintentar recursos</button>
+
+            <template x-if="recursos">
+                <div>
+                    <template x-if="recursos.invernadero">
+                        <div class="Detalle_Admin">
+                            <h3 x-text="recursos.invernadero.nombre"></h3>
+                            <p x-text="recursos.invernadero.id + ' · ' + recursos.invernadero.ubicacion"></p>
+                            <p x-text="'Estado: ' + recursos.invernadero.estado"></p>
+                        </div>
+                    </template>
+                    <p x-show="!recursos.invernadero" x-text="recursos.usuario.rol === 'administrador' ? 'Acceso administrativo global. Esta cuenta no tiene un invernadero asignado.' : 'Esta cuenta no tiene un invernadero asignado.'"></p>
+
+                    <h3>Cultivos</h3>
+                    <p x-show="recursos.cultivos.length === 0">No tiene cultivos registrados.</p>
+                    <div class="Tabla_Contenedor" x-show="recursos.cultivos.length > 0" tabindex="0">
+                        <table>
+                            <thead><tr><th scope="col">Identificador</th><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Estado</th></tr></thead>
+                            <tbody>
+                                <template x-for="Cultivo in recursos.cultivos" :key="Cultivo.id">
+                                    <tr><td x-text="Cultivo.id"></td><td x-text="Cultivo.nombre"></td><td x-text="Cultivo.tipo"></td><td x-text="Cultivo.estado"></td></tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3>Sensores</h3>
+                    <p x-show="recursos.sensores.length === 0">No tiene sensores registrados.</p>
+                    <div class="Tabla_Contenedor" x-show="recursos.sensores.length > 0" tabindex="0">
+                        <table>
+                            <thead><tr><th scope="col">Identificador</th><th scope="col">Nombre</th><th scope="col">Tipo</th><th scope="col">Estado</th><th scope="col">Ubicación</th></tr></thead>
+                            <tbody>
+                                <template x-for="Sensor in recursos.sensores" :key="Sensor.id">
+                                    <tr><td x-text="Sensor.id"></td><td x-text="Sensor.nombre"></td><td x-text="Sensor.tipo"></td><td x-text="Sensor.estado"></td><td x-text="Sensor.ubicacion"></td></tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p x-text="'Mediciones históricas asociadas: ' + recursos.registros.length"></p>
+                </div>
+            </template>
+        </section>
+
         <section id="Cuentas">
             <h2>
                 Administración de Cuentas
             </h2>
-            <p>
-                En esta sección podrá eliminar las cuentas de los usuarios 
-            </p>
-            <input type="button"
-            value="Eliminar cuenta">
+            <p x-show="!recursos">Selecciona «Ver recursos» en la tabla de usuarios para revisar una cuenta antes de eliminarla.</p>
+            <p class="Exito_Admin" x-show="mensajeExito" x-text="mensajeExito" role="status"></p>
+            <template x-if="recursos">
+                <div>
+                    <p>Cuenta seleccionada: <strong x-text="recursos.usuario.nombre + ' ' + recursos.usuario.apellido"></strong> · <span x-text="recursos.usuario.correo"></span></p>
+                    <p x-show="recursos.usuario.id === administradorId">No puedes eliminar la cuenta con la que estás administrando.</p>
+                    <p x-show="!administradorId">No se pudo identificar la sesión para habilitar el borrado. Recarga la página e intenta nuevamente.</p>
+                    <button type="button" class="Boton_Admin" x-show="!confirmando" @click="prepararEliminacion()"
+                        :disabled="!administradorId || recursos.usuario.id === administradorId || cargando || cargandoEstadisticas || eliminando">Eliminar cuenta</button>
+
+                    <div class="Confirmacion_Admin" x-show="confirmando">
+                        <h3>Confirmar eliminación</h3>
+                        <p>Se eliminará definitivamente la cuenta <strong x-text="recursos.usuario.correo"></strong> (<span x-text="recursos.usuario.id"></span>).</p>
+                        <p x-text="'También se eliminarán ' + (recursos.invernadero ? 1 : 0) + ' invernadero(s), ' + recursos.cultivos.length + ' cultivo(s), ' + recursos.sensores.length + ' sensor(es) y ' + recursos.registros.length + ' medición(es).'"></p>
+                        <p>Esta acción no se puede deshacer.</p>
+                        <div class="Acciones_Filtro_Admin">
+                            <button type="button" class="Boton_Admin" :disabled="eliminando || cargando || cargandoEstadisticas || cargandoRecursos" @click="confirmarEliminacion()" x-text="eliminando ? 'Eliminando...' : 'Confirmar eliminación'"></button>
+                            <button type="button" class="Boton_Admin Boton_Secundario_Admin" :disabled="eliminando" @click="cancelarEliminacion()">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            </template>
+            <p class="Error_Admin" x-show="errorEliminacion" x-text="errorEliminacion" role="alert"></p>
         </section>
         <p>
             <a href="../index.html">

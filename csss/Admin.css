@@ -1,6 +1,99 @@
 html {
     scroll-behavior: smooth;
 }
+[x-cloak] {
+    display: none !important;
+}
+.Filtros_Admin {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+.Filtros_Admin legend {
+    margin-bottom: 15px;
+    color: #cccccc;
+}
+.Campos_Filtro_Admin {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+}
+.Campos_Filtro_Admin label {
+    display: block;
+    margin-bottom: 8px;
+    color: #cccccc;
+}
+.Campos_Filtro_Admin input,
+.Campos_Filtro_Admin select {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 1px solid #343840;
+    border-radius: 8px;
+    background-color: #131419;
+    color: #eeeeee;
+    font: inherit;
+}
+.Acciones_Filtro_Admin {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+}
+.Boton_Admin {
+    padding: 12px 18px;
+    border: 1px solid #963232;
+    border-radius: 8px;
+    background-color: #7a2020;
+    color: white;
+    font: inherit;
+    font-weight: bold;
+    cursor: pointer;
+}
+.Boton_Admin:hover:not(:disabled) {
+    background-color: #a83232;
+}
+#Limpiar_Filtros_Admin,
+.Boton_Secundario_Admin {
+    background-color: #343840;
+    border-color: #50545e;
+}
+#Limpiar_Filtros_Admin:hover:not(:disabled),
+.Boton_Secundario_Admin:hover:not(:disabled) {
+    background-color: #50545e;
+}
+.Boton_Admin:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+.Filtros_Admin input:focus-visible,
+.Filtros_Admin select:focus-visible,
+.Boton_Admin:focus-visible {
+    outline: 2px solid #f87171;
+    outline-offset: 3px;
+}
+main section .Error_Admin {
+    color: #f87171;
+}
+
+main section .Exito_Admin {
+    color: #86efac;
+}
+.Detalle_Admin,
+.Confirmacion_Admin {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #963232;
+    border-radius: 8px;
+    background-color: #131419;
+    overflow-wrap: anywhere;
+}
+#Recursos h3,
+#Cuentas h3 {
+    color: #eeeeee;
+}
 
 main section {
     margin-bottom: 30px;
@@ -113,12 +206,12 @@ main a:focus-visible {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .Tarjeta_Estadistica:last-child {
-        grid-column: 1 / -1;
-    }
 }
 
 @media (max-width: 600px) {
+    .Campos_Filtro_Admin {
+        grid-template-columns: 1fr;
+    }
 
     main section {
         padding: 18px;

@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../csss/Estilo_Interno.css">
     <link rel="stylesheet" href="../csss/Perfil.css">
     <script type="module" src="../jss/Perfil.js"></script>
+    <script type="module" src="../jss/main.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
         Mi Perfil - Umbrella Corps Botanics
@@ -28,12 +29,12 @@
         <table>
             <tr>
                 <td>
-                    <a href="perfil.html" aria-current="page" id="Activo">
+                    <a href="perfil.html" id="Activo" data-nombre-usuario>
                         Usuario
                     </a>
                 </td>
                 <td>
-                    <a href="login.html">
+                    <a href="login.html" data-cerrar-sesion>
                         Cerrar Sesión
                     </a>
                 </td>
@@ -41,132 +42,152 @@
         </table>
 
     </header>
+    <p id="Mensaje_Sesion" role="status"></p>
+    <button type="button" id="Reintentar_Sesion" hidden>Reintentar</button>
 
     <nav>
 
-        <a href="dashboard.html">
+        <a href="dashboard.html" data-inicio-usuario hidden>
             Inicio
         </a>
-        <a href="cultivos.html">
+        <a href="cultivos.html" data-rol-enlace="usuario" hidden>
             Cultivos
         </a>
-        <a href="sensores.html">
+        <a href="sensores.html" data-rol-enlace="usuario" hidden>
             Sensores
         </a>
-        <a href="historial.html">
+        <a href="historial.html" data-rol-enlace="usuario" hidden>
             Historial
         </a>
 
     </nav>
 
-    <main>
+    <main hidden>
 
-        <article class="Expediente" x-data="perfilUsuario">
+        <article class="Expediente" x-data="perfilUsuario" x-init="cargarPerfil()">
 
-            <div class="Cabecera_Perfil">
-                <h2 x-text="usuario.nombre + ' ' + usuario.apellido"></h2>
-                <p>
-                    Expediente de personal ·
-                    <span x-text="usuario.id"></span>
-                </p>
+            <p x-show="cargando" role="status">Cargando perfil...</p>
+            <p class="Error_Perfil" x-show="errorCarga" x-text="errorCarga" role="alert"></p>
+            <button type="button" x-show="errorCarga && !cargando" @click="cargarPerfil()" x-cloak>
+                Reintentar
+            </button>
+            <template x-if="usuario">
+                <div>
+                    <div class="Cabecera_Perfil">
+                        <h2 x-text="usuario.nombre + ' ' + usuario.apellido"></h2>
+                        <p>
+                            Expediente de personal ·
+                            <span x-text="usuario.id"></span>
+                        </p>
 
-                <div class="Insignias_Perfil">
-                    <span class="Insignia_Estado" x-text="usuario.estado"></span>
-                    <span class="Insignia_Rol" x-text="usuario.rol === 'administrador' ? 'Administrador' : 'Usuario'"></span>
+                        <div class="Insignias_Perfil">
+                            <span class="Insignia_Estado" x-text="usuario.estado"></span>
+                            <span class="Insignia_Rol" x-text="usuario.rol === 'administrador' ? 'Administrador' : 'Usuario'"></span>
+                        </div>
+                    </div>
+
+                    <section class="Seccion_Perfil">
+                        <h3>Información personal</h3>
+                        <dl class="Datos_Perfil" x-show="!editando">
+
+                            <div class="Dato_Perfil">
+                                <dt>Nombre</dt>
+                                <dd x-text="usuario.nombre"></dd>
+                            </div>
+
+                            <div class="Dato_Perfil">
+                                <dt>Apellido</dt>
+                                <dd x-text="usuario.apellido"></dd>
+                            </div>
+
+                            <div class="Dato_Perfil">
+                                <dt>Correo electrónico</dt>
+                                <dd x-text="usuario.correo"></dd>
+                            </div>
+
+                            <div class="Dato_Perfil">
+                                <dt>Identificador</dt>
+                                <dd x-text="usuario.id"></dd>
+                            </div>
+
+                        </dl>
+
+                        <form id="Formulario_Perfil" x-show="editando" x-cloak @submit.prevent="guardarPerfil()" novalidate>
+
+                            <div class="Datos_Perfil">
+
+                                <div class="Campo_Perfil">
+                                    <label for="Nombre_Perfil">Nombre:</label>
+                                    <input type="text" id="Nombre_Perfil" name="nombre" autocomplete="given-name" x-model="formulario.nombre" :disabled="guardando" required>
+
+                                    <p class="Error_Perfil" x-show="errores.nombre" x-text="errores.nombre" role="alert"></p>
+                                </div>
+
+                                <div class="Campo_Perfil">
+                                    <label for="Apellido_Perfil">Apellido:</label>
+                                    <input type="text" id="Apellido_Perfil" name="apellido"
+                                        autocomplete="family-name" x-model="formulario.apellido" :disabled="guardando" required>
+
+                                    <p class="Error_Perfil" x-show="errores.apellido" x-text="errores.apellido" role="alert"></p>
+                                </div>
+
+                                <div class="Campo_Perfil">
+                                    <label for="Correo_Perfil">Correo electrónico:</label>
+                                    <input type="email" id="Correo_Perfil" name="correo" autocomplete="email" x-model="formulario.correo" :disabled="guardando" required>
+
+                                    <p class="Error_Perfil" x-show="errores.correo" x-text="errores.correo" role="alert"></p>
+                                </div>
+
+                            </div>
+
+                        </form>
+
+                    </section>
+
+                    <section class="Seccion_Perfil">
+                        <h3>Instalación asignada</h3>
+                        <template x-if="instalacion">
+                            <div class="Tarjeta_Instalacion">
+
+                                <h4 x-text="instalacion.nombre"></h4>
+
+                                <p x-text="instalacion.id + ' · ' + instalacion.ubicacion"></p>
+
+                                <div class="Estado_Instalacion">
+                                    <span>Estado de instalación</span>
+                                    <span class="Insignia_Estado" x-text="instalacion.estado"></span>
+                                </div>
+
+                            </div>
+                        </template>
+                        <p x-show="!instalacion && usuario.rol === 'administrador'">
+                            Acceso administrativo global.
+                        </p>
+                        <p x-show="!instalacion && usuario.rol !== 'administrador'">
+                            No tienes una instalación asignada.
+                        </p>
+                    </section>
+
+                    <p class="Exito_Perfil" x-show="mensajeExito" x-text="mensajeExito" x-cloak role="status"></p>
+                    <p class="Error_Perfil" x-show="errorGuardado" x-text="errorGuardado" x-cloak role="alert"></p>
                 </div>
-            </div>
-
-            <section class="Seccion_Perfil">
-                <h3>Información personal</h3>
-                <dl class="Datos_Perfil" x-show="!editando">
-
-                    <div class="Dato_Perfil">
-                        <dt>Nombre</dt>
-                        <dd x-text="usuario.nombre"></dd>
-                    </div>
-
-                    <div class="Dato_Perfil">
-                        <dt>Apellido</dt>
-                        <dd x-text="usuario.apellido"></dd>
-                    </div>
-
-                    <div class="Dato_Perfil">
-                        <dt>Correo electrónico</dt>
-                        <dd x-text="usuario.correo"></dd>
-                    </div>
-
-                    <div class="Dato_Perfil">
-                        <dt>Identificador</dt>
-                        <dd x-text="usuario.id"></dd>
-                    </div>
-
-                </dl>
-
-                <form id="Formulario_Perfil" x-show="editando" x-cloak @submit.prevent="guardarPerfil()" novalidate>
-
-                    <div class="Datos_Perfil">
-
-                        <div class="Campo_Perfil">
-                            <label for="Nombre_Perfil">Nombre:</label>
-                            <input type="text" id="Nombre_Perfil" name="nombre" autocomplete="given-name" x-model="formulario.nombre" required>
-
-                            <p class="Error_Perfil" x-show="errores.nombre" x-text="errores.nombre" role="alert"></p>
-                        </div>
-
-                        <div class="Campo_Perfil">
-                            <label for="Apellido_Perfil">Apellido:</label>
-                            <input type="text" id="Apellido_Perfil" name="apellido"
-                                autocomplete="family-name" x-model="formulario.apellido" required>
-
-                            <p class="Error_Perfil" x-show="errores.apellido" x-text="errores.apellido" role="alert"></p>
-                        </div>
-
-                        <div class="Campo_Perfil">
-                            <label for="Correo_Perfil">Correo electrónico:</label>
-                            <input type="email" id="Correo_Perfil" name="correo" autocomplete="email" x-model="formulario.correo" required>
-
-                            <p class="Error_Perfil" x-show="errores.correo" x-text="errores.correo" role="alert"></p>
-                        </div>
-
-                    </div>
-
-                </form>
-
-            </section>
-
-            <section class="Seccion_Perfil">
-                <h3>Instalación asignada</h3>
-                <div class="Tarjeta_Instalacion">
-
-                    <h4 x-text="instalacion.nombre"></h4>
-
-                    <p x-text="instalacion.id + ' · ' + instalacion.ubicacion"></p>
-
-                    <div class="Estado_Instalacion">
-                        <span>Estado de instalación</span>
-                        <span class="Insignia_Estado" x-text="instalacion.estado"></span>
-                    </div>
-
-                </div>
-            </section>
-
-            <p class="Exito_Perfil" x-show="mensajeExito" x-text="mensajeExito" x-cloak role="status"></p>
+            </template>
 
             <div class="Acciones_Perfil">
 
-                <button type="button" id="Boton_Editar_Perfil" x-show="!editando" @click="iniciarEdicion()">
+                <button type="button" id="Boton_Editar_Perfil" x-show="!editando" :disabled="!usuario" @click="iniciarEdicion()">
                     Editar perfil
                 </button>
 
-                <button type="submit" id="Boton_Guardar_Perfil" form="Formulario_Perfil" x-show="editando" x-cloak>
-                    Guardar cambios
+                <button type="submit" id="Boton_Guardar_Perfil" form="Formulario_Perfil" x-show="editando" :disabled="guardando" x-cloak>
+                    <span x-text="guardando ? 'Guardando...' : 'Guardar cambios'"></span>
                 </button>
 
-                <button type="button" id="Boton_Cancelar_Perfil" x-show="editando" x-cloak @click="cancelarEdicion()">
+                <button type="button" id="Boton_Cancelar_Perfil" x-show="editando" :disabled="guardando" x-cloak @click="cancelarEdicion()">
                     Cancelar edición
                 </button>
 
-                <a href="login.html" id="Boton_Cerrar_Sesion_Perfil">
+                <a href="login.html" id="Boton_Cerrar_Sesion_Perfil" data-cerrar-sesion>
                     Cerrar sesión
                 </a>
 
