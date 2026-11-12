@@ -76,3 +76,6 @@ endpoints:
 | GET | obtenerRecursosUsuario | Consulta los recursos asociados a un usuario. |
 | DELETE | eliminarUsuario | Elimina una cuenta y sus recursos asociados. |
 | GET | obtenerEstadisticasGlobales | Consulta las estadísticas generales del sistema. |
+
+Uso de IA
+Durante el proyecto se utilizaron herramientas de inteligencia artificial para resolver dudas o consultas y los registros respectivos se encuentran en ia/README.md.
