@@ -24,9 +24,11 @@ Tecnologías Utilizadas:
 | localStorage | Persistencia de sesiones y modificaciones de datos |
 | Live Server | Ejecución del proyecto mediante un servidor local |
 | Vite | Alternativa para ejecutar el proyecto utilizando npm |
+| Node.js | Alternativa para ejecutar el proyecto utilizando npm |
 
 Alpine.js y Chart.js se incorporan mediante CDN en las páginas que los utilizan. La API simulada se desarrolla mediante módulos JavaScript.
 (No requiere instalación previa externa y funciona tanto con Live Server, como con npm)
+El proyecto puede ejecutarse mediante Live Server sin instalar dependencias de npm. Como alternativa, puede utilizarse Vite, para lo cual es necesario tener instalados Node.js y npm.
 
 Requisitos previos para visualizar la página web:
 
