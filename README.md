@@ -68,12 +68,15 @@ Vistas disponibles:
 
 | Vista | Ruta | Cómo acceder |
 |---|---|---|
-| Inicio de sesión | html/login.html | Al ingresar a la página, en la esquina superior derecha desde el index |
-| Dashboard | html/dashboard.html | Después de iniciar sesión como usuario |
-| Cultivos | html/cultivos.html | Desde el menú de navegación de usuario |
-| Sensores | html/sensores.html | Desde el menú de navegación de usuario |
-| Historial | html/historial.html | Desde el menú de navegación de usuario |
-| Administración | html/admin.html | Después de iniciar sesión como administrador |
+| Inicio | index.html | Al ingresar a la página, página pública, la primera página visible |
+| Inicio de sesión | htmls/login.html | Al ingresar a la página, en la esquina superior derecha desde el index |
+| Registro | htmls/registro.html | Al ingresar a la página de incio de sesion y precionar registro en la parte inferior |
+| Dashboard | htmls/dashboard.html | Después de iniciar sesión como usuario |
+| Cultivos | htmls/cultivos.html | Desde el menú de navegación de usuario |
+| Sensores | htmls/sensores.html | Desde el menú de navegación de usuario |
+| Historial | htmls/historial.html | Desde el menú de navegación de usuario |
+| Perfil | htmls/perfil.html | Desde cualquier página dentro del invernadero, al presionar el nombre de la persona |
+| Administración | htmls/admin.html | Después de iniciar sesión como administrador |
 
 Las vistas privadas requieren una sesión válida. El acceso a las funciones administrativas está restringido según el rol del usuario.
 
