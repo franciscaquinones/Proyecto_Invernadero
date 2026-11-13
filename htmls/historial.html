@@ -141,9 +141,11 @@
             <button type="button" class="Boton_Reintentar" x-show="errorCarga && !cargando" @click="cargarHistorial()" x-cloak>
                 Reintentar
             </button>
+
             <p x-show="!cargando && !errorCarga && registros.length === 0" x-cloak>
                 No hay mediciones para la selección actual.
             </p>
+
             <div class="Tabla_Contenedor" x-show="!cargando && !errorCarga && registros.length > 0" x-cloak role="region" aria-label="Mediciones de sensores" tabindex="0">
             <table>
                 <thead>

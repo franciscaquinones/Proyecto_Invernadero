@@ -1,6 +1,33 @@
 Proyecto Invernadero - Arklay Botanics / Umbrella Corps Botanics
 Autores: Francisca Quiñones y Oscar Oviedo
 
+Descripción del Proyecto:
+
+Proyecto web desarrollado para gestionar y supervisar un invernadero de manera simulada.
+
+La aplicación permite registrar usuarios, iniciar sesión, administrar cultivos y sensores, consultar registros históricos y visualizar información general del invernadero. También cuenta con un apartado administrativo para gestionar usuarios y consultar estadísticas globales del sistema.
+
+Para simular el funcionamiento de un servidor, el proyecto utiliza archivos JSON (mocks) como datos iniciales y una API desarrollada en JavaScript. Esta permite realizar operaciones asíncronas, validar información y conservar los cambios mediante localStorage
+
+(La estetica del proyecto, simula una interzar de colores fuertes y brillantes para el público a modo de fachada y al entrar a las "instalaciones", se definen los tonos rojos y oscuros)
+
+Tecnologías Utilizadas:
+
+| Tecnología | Uso en el Proyecto |
+|---|---|
+| Html | Estructura de las páginas web |
+| CSS | Diseño visual, estilos y adaptación a distintas pantallas |
+| JavaScript | Interacciones, formularios y funcionamiento de la aplicación |
+| Alpine.js | Gestión de estados y funcionamiento dinámico de información |
+| Chart.js | Visualización de gráficos de los registros de sensores |
+| .JSON | Almacenamiento de los datos iniciales simulados |
+| localStorage | Persistencia de sesiones y modificaciones de datos |
+| Live Server | Ejecución del proyecto mediante un servidor local |
+| Vite | Alternativa para ejecutar el proyecto utilizando npm |
+
+Alpine.js y Chart.js se incorporan mediante CDN en las páginas que los utilizan. La API simulada se desarrolla mediante módulos JavaScript.
+(No requiere instalación previa externa y funciona tanto con Live Server, como con npm)
+
 Requisitos previos para visualizar la página web:
 
 
@@ -19,13 +46,13 @@ Instrucciones para visualizar la página web:
 7. EN CASO DE NO APARECER LA OPCIÓN "Open with Live Server": Revisar barra superior y salir del modo seguro, para esto en la notificación abierta en la parte superior ("Restricted Mode is intended..."), se debe presionar la opción "Manage", luego en el apartado de "In a Trusted Folder", presionar en botón azul "Trust". Por último, volver a tratar pasos 5 y 6.
 
 
-En el apartado de la página de iniciar sesión, al utilizar cualquier credencial, se redirigira al Dashboard correspondiente (la vista de los usuarios), pero al ingresar las credenciales: correo: "admin@umbrellabotanics.com" y la clave: "admin", se accederá al apartado de administrador.
+En el apartado de la página de iniciar sesión, para entrar, basta con registrarse con algún correo con estructura valida y se podrá entrar como nuevo usuario. Para entrar con un usuario existente, se recomienda entrar con las siguientes credenciales: correo: "jill@umbrellabotanics.try" y la clave: "Jill123" Una de las credenciales de administrador es: correo: "admin@umbrellabotanics.com" y la clave: "admin", se accederá al apartado de administrador. (Para ver más detalles sobre el resto de usuarios y sus contraseñas, revisar el mock de Usuarios)
 
 
 
 Opción Alternativa para ingresar a la página web:
 
-En caso de no funcionar el paso a paso anterior, intentar el siguiente:
+En caso de no funcionar el paso a paso anterior para visualizar la página, intentar el siguiente:
 
 1. Revisar tener instalado Git (en caso de no tenerlo, ver instrucciones de parte superior)
 2. Abrir una terminal en la app "Git Bash"
@@ -37,7 +64,7 @@ En caso de no funcionar el paso a paso anterior, intentar el siguiente:
 8. Pegar url en navegar preferido y navegar en la página
 9. IMPORTANTE no cerrar la terminal de "Git Bash" mientras se navega en la página. una vez finalizado, se puede cerrar sin problema o presionar Ctrl + C para pararlo.
 
-vistas disponibles:
+Vistas disponibles:
 
 | Vista | Ruta | Cómo acceder |
 |---|---|---|
@@ -48,8 +75,10 @@ vistas disponibles:
 | Historial | html/historial.html | Desde el menú de navegación de usuario |
 | Administración | html/admin.html | Después de iniciar sesión como administrador |
 
+Las vistas privadas requieren una sesión válida. El acceso a las funciones administrativas está restringido según el rol del usuario.
 
-endpoints:
+
+Endpoints:
 
 | Método | Función | Descripción |
 |---|---|---|

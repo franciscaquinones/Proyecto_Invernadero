@@ -86,6 +86,111 @@ section p {
     background-color: #181c2d;
 }
 
+[x-cloak] {
+    display: none !important;
+}
+
+#Registro_Historial .Error_Historial {
+    color: #f87171;
+}
+
+.Boton_Reintentar {
+    padding: 12px 18px;
+    background-color: #7a2020;
+    border: 1px solid #963232;
+    border-radius: 8px;
+    color: white;
+    font: inherit;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.Boton_Reintentar:hover:not(:disabled) {
+    background-color: #a83232;
+}
+
+#Boton_De_Limpiar_Filtros_Historial {
+    background-color: #343840;
+    border-color: #50545e;
+}
+
+#Boton_De_Limpiar_Filtros_Historial:hover:not(:disabled) {
+    background-color: #50545e;
+}
+
+.Boton_Reintentar:focus-visible,
+.Tabla_Contenedor:focus-visible,
+.Campos_Filtro_Historial input:focus-visible,
+.Campos_Filtro_Historial select:focus-visible {
+    outline: 2px solid #f87171;
+    outline-offset: 3px;
+}
+
+.Filtros_Historial {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+}
+
+.Filtros_Historial legend {
+    margin-bottom: 15px;
+    color: #cccccc;
+}
+
+.Campos_Filtro_Historial {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.Campos_Filtro_Historial label {
+    display: block;
+    margin-bottom: 8px;
+    color: #cccccc;
+}
+
+.Campos_Filtro_Historial input,
+.Campos_Filtro_Historial select {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid #41434b;
+    border-radius: 8px;
+    background-color: #131419;
+    color: #eeeeee;
+    font: inherit;
+    color-scheme: dark;
+}
+
+.Acciones_Filtro_Historial {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.Filtros_Historial:disabled {
+    opacity: 0.6;
+}
+
+.Filtros_Historial button:disabled {
+    cursor: wait;
+}
+
+.Grafico_Contenedor {
+    position: relative;
+    height: 340px;
+    width: 100%;
+    min-width: 0;
+}
+
+#Grafico_Historial h3 {
+    color: #eeeeee;
+    font-size: 18px;
+}
+
 @media (max-width: 900px) {
 
     .Tarjetas_Resumen {
@@ -95,6 +200,14 @@ section p {
 }
 
 @media (max-width: 600px) {
+
+    .Grafico_Contenedor {
+        height: 280px;
+    }
+
+    .Campos_Filtro_Historial {
+        grid-template-columns: 1fr;
+    }
 
     section {
         padding: 18px;
